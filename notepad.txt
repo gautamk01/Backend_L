@@ -1,0 +1,6 @@
+First basic Structure 
+then db connection 
+then create the models 
+then work on controller 
+
+based on the route we have to create controller 

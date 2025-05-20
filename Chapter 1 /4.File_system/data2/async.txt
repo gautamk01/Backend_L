@@ -1,0 +1,2 @@
+This is another way of creating a text file
+There are few line added in the text file

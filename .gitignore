@@ -1,0 +1,32 @@
+# Ignore operating system files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+logs/
+
+# Ignore build artifacts
+build/
+dist/
+out/
+target/
+
+# Ignore dependency directories
+node_modules/
+vendor/
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.suo
+*.swp
+
+# Ignore environment files
+.env
+/config/secrets.yml
+
+# Ignore temporary files
+*.tmp
+temp/
+tmp/
