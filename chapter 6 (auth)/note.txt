@@ -1,0 +1,11 @@
+Auth is a more important part 
+register FOrm -> click Register -> This will be added to the mongodb
+-> login page -> id and password -> login page 
+                  public         -> public page
+
+Normal user or admin user , both needed to be have a login but redoirect is different 
+1.how auth works 
+2. create cookies 
+3. Role based auth (Role : user / admin)
+4. logined in we have to store a cookies , for auth information 
+5. if the user is authenticated you have to login 
