@@ -12,3 +12,5 @@ Normal user or admin user , both needed to be have a login but redoirect is diff
 
 6.let userid, email and password 
 7.role default user 
+
+bcryt -> this is a package we used to encrypt and decrypt the things inside the auth
