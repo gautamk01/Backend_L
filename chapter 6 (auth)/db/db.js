@@ -1,3 +1,4 @@
+//Database connection
 const mongoos = require("mongoose");
 const connectDB = async () => {
   try {

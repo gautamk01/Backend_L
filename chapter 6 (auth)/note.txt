@@ -14,3 +14,7 @@ Normal user or admin user , both needed to be have a login but redoirect is diff
 7.role default user 
 
 bcryt -> this is a package we used to encrypt and decrypt the things inside the auth
+
+when ever the user email and password -> we will create a token (hold the user information) -> valid for some minuetes -> basic level
+
+login controller : - 

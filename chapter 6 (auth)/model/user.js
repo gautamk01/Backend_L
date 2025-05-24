@@ -1,5 +1,7 @@
+//MOdel file consiste of Schema of the Auth functionality
 const mongoose = require("mongoose");
 
+//User Schema
 const UserSchema = new mongoose.Schema(
   {
     username: {
@@ -28,4 +30,5 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//Exporting Schema
 module.exports = mongoose.model("User", UserSchema);
