@@ -1,5 +1,7 @@
+//Controller mainly focuse on the function of router specifically the
 const User = require("../model/user");
 const bcrypt = require("bcryptjs"); //package for encryption and decrption
+const jwt = require("jsonwebtoken"); // to store the token
 
 //register Controller - to add a new user
 const registerUser = async (req, res) => {
@@ -25,7 +27,7 @@ const registerUser = async (req, res) => {
     const hashedpassword = await bcrypt.hash(password, salt);
 
     //create a new user and save it our database
-    const newlyCreatedUser = new user({
+    const newlyCreatedUser = new User({
       username,
       email,
       password: hashedpassword,
@@ -78,8 +80,25 @@ const login_controller = async (req, res) => {
         message: "Wrong Password",
       });
     }
+    //bareer token - to store the token  , you can store in a cookie and pass the token to front end and store it in session
+    // 1.cookies or 2. session Store
 
     //create a tocken - based on the user information
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username,
+        role: user.role,
+      },
+      process.env.jwt_secret_key,
+      { expiresIn: "15m" }
+    ); //User information
+
+    res.status(200).json({
+      success: true,
+      message: "loged in",
+      accessToken,
+    });
   } catch (e) {
     console.log(e);
     res.status(500).json({

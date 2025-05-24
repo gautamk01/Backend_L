@@ -1,3 +1,4 @@
+//Http route for Registering the user and login to a perticular user
 const express = require("express");
 const {
   registerUser,

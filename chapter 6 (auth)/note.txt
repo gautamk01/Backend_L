@@ -16,5 +16,20 @@ Normal user or admin user , both needed to be have a login but redoirect is diff
 bcryt -> this is a package we used to encrypt and decrypt the things inside the auth
 
 when ever the user email and password -> we will create a token (hold the user information) -> valid for some minuetes -> basic level
+we have to store the token in cookie 
+login the user 
 
 login controller : - 
+1. getting the field from frontent 
+2. find the current user 
+3. if the user desn't existe then give an error message 
+4. check if the password is correct or wrong
+5. creating a token and returning the token 
+6. this access token will hold all the information that we are storing here like user id , user name and role 
+
+After Loged in : 
+1. if user are a normal user -> you can go to certain pages :
+2. if user are a admin user -> you can go to certain pages and some special pages :
+
+we need to user middle ware to speperate these things : role based 
+middleware -> check if the user is authenticated or not -> then check the token or verify the token -> ones this is done we can get user admin section 
