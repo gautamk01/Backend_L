@@ -151,7 +151,7 @@ async function runQuerysExample9() {
     const updateUser = await User.findByIdAndUpdate(
       "6825651dae10c2f7e2d2bc10",
       {
-        $set: { age: 100 },
+        $set: { age: 100 }, // set is mainly used to update the existing values in the section
         $push: { tags: "updated" },
       },
       { new: true }

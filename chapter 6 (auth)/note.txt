@@ -33,3 +33,7 @@ After Loged in :
 
 we need to user middle ware to speperate these things : role based 
 middleware -> check if the user is authenticated or not -> then check the token or verify the token -> ones this is done we can get user admin section 
+
+
+Next Chapter : File upload 
+Lets start  the Fun and understand how is it is working 
