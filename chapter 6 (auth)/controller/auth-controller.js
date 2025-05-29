@@ -134,7 +134,7 @@ const changePassword = async (req, res) => {
       });
     }
 
-    //check the old password and new password
+    //check the old password given is correct
     const ispassword = await bcrypt.compare(oldpassword, user.password);
 
     if (!ispassword) {

@@ -122,4 +122,45 @@ uploadImageController
 3. pass this url, public_id and uploadedBy from the auth middleware user id and save it in the mongodb 
 
 
-//change password functionality 
+Here is your refined and professional version of the documentation without altering the core logic or meaning:
+
+---
+
+### Change Password Functionality
+
+**Overview:**
+This is an authentication-related feature and is handled under the `auth-route` routing group.
+
+**Route:**
+`POST /passchange`
+This route facilitates the password change functionality for authenticated users.
+
+**Middleware:**
+
+* **Authentication Middleware (`authMiddleware`)**: Ensures that the user is authenticated before allowing access to the password change endpoint.
+
+**Controller Function: `changePassword`**
+
+**Workflow:**
+
+1. The `userId` is retrieved from the authentication middleware and attached to the request object.
+2. Extract `oldPassword` and `newPassword` from `req.body`.
+
+   * If either value is missing, return an appropriate error response.
+3. Query the database to find the user using the provided `userId`.
+
+   * If the user does not exist, return an error response.
+4. Verify whether the provided `oldPassword` matches the current password stored in the database.
+
+   * If the password is incorrect, return an authentication error.
+5. If the old password is valid:
+
+   * Hash the `newPassword` securely using a hashing function (e.g., bcrypt).
+   * Update the user's password in the MongoDB database with the newly hashed password.
+6. Return a success response indicating that the password has been updated successfully.
+
+---
+
+Let me know if you'd like this formatted for README, Swagger, or internal code documentation.
+
+     
