@@ -25,6 +25,7 @@ router.post(
   uploadImageController
 );
 
+//fetching the image that is uploaded
 router.get("/get", authMiddleware, fetchImageContoller);
 //CHeck the user is loged in -> is adminUser or not -> upload a singleimage -> store it in the mongodb
 module.exports = router;

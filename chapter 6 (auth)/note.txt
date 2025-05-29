@@ -121,6 +121,12 @@ uploadImageController
 2. this will pass the file path from the multer which will pass to the uploadtocloudinary helper function which will return the URL 
 3. pass this url, public_id and uploadedBy from the auth middleware user id and save it in the mongodb 
 
+##Fetch the all image functionality 
+This comes under the route of image/get which will collect all the image data in the monogodb
++ make sure the user is loged in ,
++ the fetchImageContoller controller function will help in fetching the image data 
+ 
+
 ### Change Password Functionality
 
 **Overview:**
