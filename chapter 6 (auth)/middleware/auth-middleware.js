@@ -16,7 +16,6 @@ const authMiddleware = (req, res, next) => {
     try {
       //using jwt we will verify the token and pass it to the req.userInfo
       const decodedTokenInfo = jwt.verify(token, process.env.jwt_secret_key);
-      console.log(decodedTokenInfo);
       //in a real project we needed to pass this infromation to the front end we will
       req.userInfo = decodedTokenInfo;
       next();
@@ -28,7 +27,6 @@ const authMiddleware = (req, res, next) => {
       });
     }
   }
-  next();
 };
 
 module.exports = authMiddleware;

@@ -91,7 +91,7 @@ const login_controller = async (req, res) => {
         role: user.role,
       },
       process.env.jwt_secret_key,
-      { expiresIn: "15m" }
+      { expiresIn: "35m" }
     ); //User information
 
     res.status(200).json({
@@ -108,4 +108,62 @@ const login_controller = async (req, res) => {
   }
 };
 
-module.exports = { login_controller, registerUser };
+//change the password functionality  (always  imagein the frontend perpective )
+const changePassword = async (req, res) => {
+  try {
+    const userId = req.userInfo.userId;
+
+    //extract the old and new password
+    //checking the old and new password
+
+    if (!req.body) {
+      return res.status(400).json({
+        success: false,
+        message: "old and new passord is not passsed is not found ",
+      });
+    }
+    const { oldpassword, newpassword } = req.body;
+
+    //find the loged in user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User is not found ",
+      });
+    }
+
+    //check the old password and new password
+    const ispassword = await bcrypt.compare(oldpassword, user.password);
+
+    if (!ispassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password is incorrect , please try again",
+      });
+    }
+
+    //hashing the new passwrod
+    const salt = await bcrypt.genSalt(10);
+    const newhashpassword = await bcrypt.hash(newpassword, salt);
+
+    //update the user password
+    user.password = newhashpassword;
+    await user.save();
+
+    //return the success resonse
+    res.status(200).json({
+      success: true,
+      message: "The password has changed properly",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Access Deinied ",
+    });
+  }
+};
+
+module.exports = { login_controller, registerUser, changePassword };

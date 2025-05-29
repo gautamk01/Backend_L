@@ -9,7 +9,7 @@ const uploadToCloudinary = async (filepath) => {
 
     return {
       url: result.secure_url,
-      publicId: result.public_id,
+      public_id: result.public_id,
     };
 
     //when ever we are uploading an image we needed to call the helper function we needed store the

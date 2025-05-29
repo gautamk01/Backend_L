@@ -37,3 +37,89 @@ middleware -> check if the user is authenticated or not -> then check the token 
 
 Next Chapter : File upload 
 Lets start  the Fun and understand how is it is working 
+1. multer : handle multi part and form data used for uploading file 
+2. cloudinary :- upload and store our image 
+
+Task 
+user :- fetch the image 
+admin :- can upload the image 
+
+when ever we are working with some upload functionalities :- understand the properties are there for file upload schema 
+work flow :- 
+In Front end -> click upload an image -> select the image -> upload to cloudinary -> will return an asset id and url-> store in moongoose 
+
+
+
+Complete flow of everything till now :-
+
+folder and explanation :- 
+
+Config - 
+controller - for controller 
+db - Connection functionality of mongoDB 
+helper - in cloudinary  
+middleware - auth middleware , uploadmiddleware 
+model - sceham for mongoDB
+router - focuse on routing functionalities 
+upload - for the multer to save the image temperary 
+
+-> server.js - this is the root folder that we enable to listen to server 
+   we are using Nodemon for refreshing the server each time when we update things 
+
+Auth 
+
+for authentication , for every application there will be login and register functionality
+so user needed to type username, email and password 
+login to the specific id there will be a token for login that we will store in cookies 
+using jwt accesss token 
+
+first we have to create an auth route which will be for login and register 
+
+auth-router -> 1.resgister user and 2. login user (POST request)
+from frontend if there is any requrest regarding the POST the server will give respoonse 
+
+there will be controller for each request here we have register User and login user controller 
+
+Register User Controller :- 
+1. First extract the req.boyd where we will get username,email,password and role 
+2. checkExistingUser (which will avoid createing any account of same name )
+3.hash the password with bcrypt function(it is a liberary)
+4. then we have to save it in mongodb for that we have to create a schema or model 
+5. before that we have to make sure the monogo db is connected or not 
+6. pass the values to the schema and save the values in mongoos 
+
+
+Login user controller :- 
+1. collect the username and password from the request body 
+2. find the user  and if the user is not exisiting then return false
+3. compare the password with bcrypt function 
+4. if the password matchs then store it in cookies 
+5. using jwt we are createing a token accesstoken with a secrete key which expires in 35 minutes 
+
+
+After this we have to develope a middleware tha will look after the authentication is properly done or not 
+1. from header collect the authorization
+2.token is collected 
+3. verify the token using the private key 
+4. this will pass the decodedtokeinfo 
+5. save it in req.userInfo
+
+Home route :- we will check only if the user is loged in or not ,
+admin_route:- we have to check the role of the fetched or decoded access token user is admin or not 
+              for that we have a proper middleware  
+
+using multer we will store the file temperary in the server in uploads folder  and change the file name to 
+and filter the file with name starts with image else  return error 
+export that to the multer 
+
+now we have to store the image into cludinary and then 
+
+helper function = uploadToCloudinary which will help in upload and then return url and public_id result 
+
+uploadImageController 
+1.check the req.file is present or not  it is comming from multer 
+2. this will pass the file path from the multer which will pass to the uploadtocloudinary helper function which will return the URL 
+3. pass this url, public_id and uploadedBy from the auth middleware user id and save it in the mongodb 
+
+
+//change password functionality 

@@ -8,7 +8,7 @@ const imageSchema = new mongoose.Schema(
       type: String,
     },
     //public id
-    publicId: {
+    public_id: {
       type: String,
       required: true,
     },
