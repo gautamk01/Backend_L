@@ -5,6 +5,7 @@ const uploadMiddleware = require("../middleware/upload-middleware");
 const {
   uploadImageController,
   fetchImageContoller,
+  deleteImageController,
 } = require("../controller/image-controller");
 const router = express.Router();
 
@@ -27,5 +28,14 @@ router.post(
 
 //fetching the image that is uploaded
 router.get("/get", authMiddleware, fetchImageContoller);
+
+//deleting the image
+router.delete(
+  "/delete/:id",
+  authMiddleware,
+  isAdminUser,
+  deleteImageController
+);
+
 //CHeck the user is loged in -> is adminUser or not -> upload a singleimage -> store it in the mongodb
 module.exports = router;

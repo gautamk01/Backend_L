@@ -161,4 +161,16 @@ This route facilitates the password change functionality for authenticated users
 6. Return a success response indicating that the password has been updated successfully.
 
    
-Image delete Functionality
+##Image delete Functionality
+
+Make sure the delete funcality is also controller by auth middlware which make sure the user is authenticated and check the user is admin or not 
+then pass the deleteImageController and route for this is in Image router /image/delete/:id 
+just pass the id of the image to be deleted 
+
+1. get image id from the params 
+2. collect the userId from the userInfo which will be given from the auth 
+3. check the image is present in the db if not send the error message 
+4. check the user needed to be the same user who upload the image can only delete the image 
+5. delete the Image from the cloudinary 
+6. delete the image from the monogodb 
+7. return the success message through API 
