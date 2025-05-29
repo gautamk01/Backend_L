@@ -121,11 +121,6 @@ uploadImageController
 2. this will pass the file path from the multer which will pass to the uploadtocloudinary helper function which will return the URL 
 3. pass this url, public_id and uploadedBy from the auth middleware user id and save it in the mongodb 
 
-
-Here is your refined and professional version of the documentation without altering the core logic or meaning:
-
----
-
 ### Change Password Functionality
 
 **Overview:**
@@ -159,8 +154,5 @@ This route facilitates the password change functionality for authenticated users
    * Update the user's password in the MongoDB database with the newly hashed password.
 6. Return a success response indicating that the password has been updated successfully.
 
----
-
-Let me know if you'd like this formatted for README, Swagger, or internal code documentation.
-
-     
+   
+Image delete Functionality
