@@ -174,3 +174,12 @@ just pass the id of the image to be deleted
 5. delete the Image from the cloudinary 
 6. delete the image from the monogodb 
 7. return the success message through API 
+
+
+#implementation of sorting and Paging 
+#Pagination 
+consider there are 10000 pages , intead of fetching all the pages the user will be shown some specific page 
+we have to think how much data we have to render and how much we have to skip
+there are 10 images . convert into 2 pages , 5 images per pages 
+which means all the image shown in the first pages should not needed to be shown in the next pag
+ 
