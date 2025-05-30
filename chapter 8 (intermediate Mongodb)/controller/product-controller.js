@@ -1,5 +1,50 @@
 const Product = require("../model/product");
 
+//first filter the document instock is true and price is greater than 100
+const getProductsStats = async (req, res) => {
+  try {
+    // here we aggregating multiple condition and creating one query
+    //1.filter and 2.group
+    const result = await Product.aggregate([
+      //first condition stage 1
+      {
+        $match: {
+          inStock: true,
+          price: {
+            $gte: 100,
+          },
+        },
+      },
+      //group our document
+      //group by catagories
+      {
+        $group: {
+          _id: "$category",
+          avgPrice: {
+            $avg: "$price",
+          },
+          count: {
+            $sum: 1,
+          },
+          totalPrice: {
+            $sum: "$price",
+          },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Some error has been occured",
+    });
+  }
+};
 const insertSampleProduct = async (req, res) => {
   try {
     const sampleProducts = [
@@ -54,4 +99,4 @@ const insertSampleProduct = async (req, res) => {
   }
 };
 
-module.exports = { insertSampleProduct };
+module.exports = { insertSampleProduct, getProductsStats };
