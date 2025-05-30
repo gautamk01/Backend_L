@@ -1,0 +1,5 @@
+Topics to Learn : 
+1.Understand the aggregation Pipeline
+2.Using common aggregation operator 
+3.Understanding document references
+4.Populating referenced document 
