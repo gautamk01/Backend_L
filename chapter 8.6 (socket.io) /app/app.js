@@ -1,10 +1,10 @@
-const socket = new WebSocket("ws://localhost:3000"); //make sure the port in the backend is same
+const socket = io("ws://localhost:3000"); //make sure the port in the backend is same
 
 function sendmessage(e) {
   e.preventDefault(); // submit the form without reloading the page
   const input = document.querySelector("input");
   if (input.value) {
-    socket.send(input.value);
+    socket.emit("message", input.value);
     input.value = "";
   }
   input.focus();
@@ -13,7 +13,8 @@ function sendmessage(e) {
 document.querySelector("form").addEventListener("submit", sendmessage);
 
 //listen for messsages  from the server
-socket.addEventListener("message", ({ data }) => {
+socket.on("message", (data) => {
+  console.log(data);
   const li = document.createElement("li"); //create a new list element
   li.textContent = data; //inser the data to the list
   document.querySelector("ul").appendChild(li); //append the list to unordered list

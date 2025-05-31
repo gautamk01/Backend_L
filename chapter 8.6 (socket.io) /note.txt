@@ -5,6 +5,6 @@ send the message (client) -> received the message to the server -> again server 
 c -> s ->c 
 
 task: 
-I have generated the client a simple website where there is a form and you can type the message 
-this message will be passed to the server with the a get protocol asking to switch the server the protocol to ws (websocket)
-then it will give the response that it got upgraded to the websocket the connection is then established 
+Here by using socket how we are doing socket programming that we are learning 
+socket.io is more advanced and easy compart to the websocket function or module 
+where we have enable module in package.json which enable us to  in importing exporting things 
