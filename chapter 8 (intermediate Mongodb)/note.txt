@@ -3,3 +3,11 @@ Topics to Learn :
 2.Using common aggregation operator 
 3.Understanding document references
 4.Populating referenced document 
+
+
+# basic setting up things, like connection to MDB and other things 
+# to understand Aggregation pipeline and common Aggregation operator i given an example of product 
+#check the product routes 
+#
+#to understand document refernce , like connecting the 2 table document we have to work  
+# then when we have to fetch the document we have to populate it in the fetching section so that the reference table document will be add to the fetched documents 
