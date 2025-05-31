@@ -8,3 +8,6 @@ task:
 Here by using socket how we are doing socket programming that we are learning 
 socket.io is more advanced and easy compart to the websocket function or module 
 where we have enable module in package.json which enable us to  in importing exporting things 
+
+In this application you can there is a broadcast feature like if the same app is used in 2 different application 
+we can comminate 2 different tab so different id would be generated for the 2 different things 

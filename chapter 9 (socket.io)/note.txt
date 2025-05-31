@@ -1,0 +1,27 @@
+This is a simple node js programming demostrating the multi chat application using socket.io 
+
+here in this application : 
+1. we have to setup server 
+2. then we have a basic html setup 
+3. all the static website 
+What are static files? These are files that the server sends directly to the client's browser without any server-side processing. Common examples include:
+HTML files (.html)
+CSS stylesheets (.css)
+JavaScript client-side scripts (.js)
+Images (.png, .jpg, .gif, etc.)
+Fonts (.ttf, .woff, etc.)b browsers need these files to render a complete web page. When you visit a website, your browser makes requests for these static assets.
+
+->Host static assets:
+    Make your HTML, CSS, JavaScript, images, and other client-side files available to web browsers.
+-> Simplify development: 
+    You don't need to write separate routes for each static file; express.static handles it automatically.
+-> Improve performance (in development):
+    For small to medium-sized applications, serving static files directly from Express is convenient. In production, you might use a dedicated web server like Nginx or a CDN for better performance and scalability of static assets.
+
+1. from the client the user will ask the ENter the username 
+2. then the socket will emit the user name in join 
+3. this will be listen by the socket in the server 
+4. there is a set of username initiated  in the server 
+5. it will add the user name to the set 
+6. then it will emit username and username set (by converting the user array ) to all clients (broadcasting)
+7. first handling the user join  and adding one div for username 
