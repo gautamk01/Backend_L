@@ -21,6 +21,7 @@ io.on("connection", (socket) => {
   //used to listen the emited username
   socket.on("join", (userName) => {
     user.add(userName);
+    socket.userName = userName;
 
     //we have to broadcast to all user that a new user has join ,
     //all user must needed to know when a user is joined
@@ -32,8 +33,25 @@ io.on("connection", (socket) => {
   });
 
   //handle the incomming chat message
+  socket.on("chatmessage", (message) => {
+    //broadcast all the message to all connected clients
+    io.emit("chatmessage", message);
+  });
 
   //handle disconnection
+  socket.on("disconnect ", () => {
+    console.log("An user is disconnected ");
+
+    user.forEach((user) => {
+      if (user == socket.userName) {
+        user.delete(user);
+
+        io.emit("userLeft", user);
+
+        io.emit("userlist", Array.from(user));
+      }
+    });
+  });
 });
 
 server.listen(3000, () => {

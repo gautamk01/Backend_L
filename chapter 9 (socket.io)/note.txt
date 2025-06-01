@@ -25,3 +25,4 @@ Fonts (.ttf, .woff, etc.)b browsers need these files to render a complete web pa
 5. it will add the user name to the set 
 6. then it will emit username and username set (by converting the user array ) to all clients (broadcasting)
 7. first handling the user join  and adding one div for username 
+8. Then update the userList in the html by listening the list pass by the server 
