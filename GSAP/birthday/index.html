@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for better responsiveness and alignment */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        
+        @media (max-width: 640px) {
+            .calendar-grid {
+                gap: 2px;
+            }
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        @media (max-width: 640px) {
+            .calendar-day {
+                min-height: 35px;
+                font-size: 0.875rem;
+            }
+        }
+        
+        .birthday-highlight {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        }
+        
+        .birthday-list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .birthday-list-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        
+        .modal-content {
+            background: #1a2332;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 640px) {
+            .modal-content {
+                padding: 20px;
+                margin: 16px;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4ade80;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 640px) {
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+        
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        @media (max-width: 640px) {
+            .header-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+        }
+        
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        @media (max-width: 640px) {
+            .nav-controls {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+        
+        .birthday-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        @media (max-width: 640px) {
+            .birthday-section {
+                padding: 16px;
+                margin-top: 20px;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #111827;
+            color: white;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #9ca3af;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 8px;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #6b7280;
+        }
+        
+        .container-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        @media (max-width: 640px) {
+            .container-main {
+                padding: 16px;
+            }
+        }
+        
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 640px) {
+            .calendar-header {
+                gap: 2px;
+            }
+        }
+        
+        .day-header {
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: 600;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 640px) {
+            .day-header {
+                font-size: 0.75rem;
+                padding: 6px 2px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#0d1117] text-white min-h-screen">
+    <div class="container-main">
+        <!-- Header -->
+        <div class="header-section">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold">Birthday Calendar</h1>
+                <p class="text-gray-400 text-sm md:text-base mt-1">Never miss a special day</p>
+            </div>
+            <button onclick="document.getElementById('addBirthdayModal').style.display='flex'" 
+                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 text-sm md:text-base">
+                + Add Birthday
+            </button>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid-layout">
+            <!-- Calendar Section -->
+            <div class="bg-[#1a2332] rounded-2xl p-4 md:p-6">
+                <!-- Calendar Navigation -->
+                <div class="nav-controls mb-6">
+                    <button onclick="changeMonth(-1)" 
+                            class="p-2 md:p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <h2 id="monthYear" class="text-lg md:text-xl font-bold min-w-[140px] md:min-w-[160px] text-center"></h2>
+                    <button onclick="changeMonth(1)" 
+                            class="p-2 md:p-3 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div class="calendar-header">
+                    <div class="day-header">Sun</div>
+                    <div class="day-header">Mon</div>
+                    <div class="day-header">Tue</div>
+                    <div class="day-header">Wed</div>
+                    <div class="day-header">Thu</div>
+                    <div class="day-header">Fri</div>
+                    <div class="day-header">Sat</div>
+                </div>
+                <div id="calendar" class="calendar-grid"></div>
+            </div>
+
+            <!-- Upcoming Birthdays Section -->
+            <div class="birthday-section">
+                <h3 class="text-lg md:text-xl font-bold mb-4">Upcoming Birthdays</h3>
+                <div id="birthdayList" class="space-y-2"></div>
+                <div id="noBirthdays" class="text-center text-gray-400 py-8 hidden">
+                    <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p>No upcoming birthdays</p>
+                    <p class="text-sm mt-1">Add some birthdays to get started!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Birthday Modal -->
+    <div id="addBirthdayModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold">Add New Birthday</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <form id="birthdayForm" onsubmit="addBirthday(event)">
+                <div class="form-group">
+                    <label class="block text-sm font-medium mb-2">Name</label>
+                    <input type="text" id="birthdayName" class="form-input" placeholder="Enter name" required>
+                </div>
+                <div class="form-group">
+                    <label class="block text-sm font-medium mb-2">Birth Date</label>
+                    <input type="date" id="birthdayDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="block text-sm font-medium mb-2">Profile Image URL (Optional)</label>
+                    <input type="url" id="birthdayImage" class="form-input" placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 mt-6">
+                    <button type="submit" class="btn-primary">Add Birthday</button>
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        let currentDate = new Date();
+        let birthdays = [];
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            const monthYear = document.getElementById('monthYear');
+            
+            calendar.innerHTML = '';
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            monthYear.textContent = currentDate.toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'calendar-day';
+                calendar.appendChild(emptyDiv);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayButton = document.createElement('button');
+                dayButton.className = 'calendar-day bg-gray-700 hover:bg-gray-600 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105';
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.textContent = day;
+                
+                // Check if this day has a birthday
+                const hasBirthday = birthdays.some(birthday => 
+                    birthday.date.getDate() === day && 
+                    birthday.date.getMonth() === month
+                );
+                
+                if (hasBirthday) {
+                    dayButton.classList.add('birthday-highlight');
+                }
+                
+                dayButton.appendChild(dayDiv);
+                calendar.appendChild(dayButton);
+            }
+        }
+
+        function renderBirthdayList() {
+            const birthdayList = document.getElementById('birthdayList');
+            const noBirthdays = document.getElementById('noBirthdays');
+            
+            birthdayList.innerHTML = '';
+
+            if (birthdays.length === 0) {
+                noBirthdays.classList.remove('hidden');
+                return;
+            }
+
+            noBirthdays.classList.add('hidden');
+
+            // Sort birthdays by date
+            const sortedBirthdays = [...birthdays].sort((a, b) => {
+                const aNext = getNextBirthday(a.date);
+                const bNext = getNextBirthday(b.date);
+                return aNext - bNext;
+            });
+
+            sortedBirthdays.forEach(birthday => {
+                const daysUntil = getDaysUntilBirthday(birthday.date);
+                const age = getAge(birthday.date);
+                
+                const birthdayItem = document.createElement('div');
+                birthdayItem.className = 'birthday-list-item';
+                
+                birthdayItem.innerHTML = `
+                    <div class="w-10 h-10 bg-center bg-no-repeat bg-cover rounded-full flex-shrink-0" 
+                         style="background-image: url('${birthday.image || 'https://via.placeholder.com/40'}')">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-white text-sm font-medium truncate">${birthday.name}</p>
+                        <p class="text-gray-400 text-xs">
+                            ${daysUntil === 0 ? 'Today!' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days`} • Turning ${age + 1}
+                        </p>
+                    </div>
+                `;
+                
+                birthdayList.appendChild(birthdayItem);
+            });
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function getNextBirthday(birthDate) {
+            const today = new Date();
+            const thisYear = today.getFullYear();
+            let nextBirthday = new Date(thisYear, birthDate.getMonth(), birthDate.getDate());
+            
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(thisYear + 1);
+            }
+            
+            return nextBirthday;
+        }
+
+        function getDaysUntilBirthday(birthDate) {
+            const today = new Date();
+            const nextBirthday = getNextBirthday(birthDate);
+            const diffTime = nextBirthday - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function addBirthday(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('birthdayName').value;
+            const dateStr = document.getElementById('birthdayDate').value;
+            const image = document.getElementById('birthdayImage').value || 'https://via.placeholder.com/150';
+            
+            const date = new Date(dateStr);
+            
+            const newBirthday = {
+                name: name,
+                date: date,
+                image: image
+            };
+            
+            birthdays.push(newBirthday);
+            
+            // Save to localStorage
+            localStorage.setItem('birthdays', JSON.stringify(birthdays));
+            
+            renderCalendar();
+            renderBirthdayList();
+            closeModal();
+            
+            showNotification(`${name}'s birthday has been added!`);
+            
+            // Reset form
+            document.getElementById('birthdayForm').reset();
+        }
+
+        function closeModal() {
+            document.getElementById('addBirthdayModal').style.display = 'none';
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Load birthdays from localStorage on page load
+        function loadBirthdays() {
+            const saved = localStorage.getItem('birthdays');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                birthdays = parsed.map(b => ({
+                    ...b,
+                    date: new Date(b.date)
+                }));
+            }
+        }
+
+        // Initialize the application
+        loadBirthdays();
+        renderCalendar();
+        renderBirthdayList();
+    </script>
+</body>
+</html>
