@@ -253,7 +253,7 @@ nav .divider {
 
   .header {
     top: 25%;
-    width: calc(100%-12.5rem);
+    width: calc(100% - 12.5rem);
   }
 
   .site-info {
