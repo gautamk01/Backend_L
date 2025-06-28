@@ -84,9 +84,9 @@ nav {
 .menu-items,
 .menu-footer {
   width: 100%;
-  padding: 2.5rem;
+  padding: 2.5em;
   display: flex;
-  gap: 2.5rem;
+  gap: 2.5em;
 }
 
 .col-lg {
@@ -115,7 +115,7 @@ nav {
 }
 
 .menu-items .col-sm {
-  padding: 2.5rem 0;
+  padding: 2.5em 0;
   display: flex;
   flex-direction: column;
   gap: 2.5em;
@@ -150,7 +150,7 @@ nav {
   color: #8f8f8f;
 }
 
-.social a:hover {
+.social:hover {
   color: #fff;
 }
 
@@ -165,7 +165,7 @@ nav {
 }
 
 .link a::after,
-.social a ::after,
+.social a::after,
 .menu-footer a::after {
   position: absolute;
   content: "";
@@ -198,6 +198,7 @@ nav {
   position: relative;
   width: 100vw;
   height: 100svh;
+  padding: 2.5em;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
