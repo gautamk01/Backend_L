@@ -64,6 +64,25 @@ p {
   line-height: 1;
   cursor: pointer;
 }
+/* Hide nav sections when menu is open, keep only close button */
+body.menu-open nav.main-nav .nav-left,
+body.menu-open nav.main-nav .nav-center {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+body.menu-open nav.main-nav .nav-right {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+/* Optional: Adjust nav background when menu is open */
+body.menu-open nav.main-nav {
+  background: transparent;
+  backdrop-filter: none;
+}
 
 /* Three-Column Navigation Layout */
 nav.main-nav {
@@ -780,3 +799,170 @@ body.loaded .demo-section {
     transform: rotate(3deg) translate(50px, 100px) scale(1.1);
   }
 }
+/* ===== PROJECT 3 STYLES - ADD AT END OF CSS FILE ===== */
+
+/* Projects Intro & Outro Sections */
+.projects-intro,
+.projects-outro {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  background-color: #0f0f0f;
+  color: #fff;
+  padding: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.projects-intro h1,
+.projects-outro h1 {
+  width: 60%;
+  text-align: center;
+  line-height: 1.1;
+  font-size: 5rem;
+  font-weight: 500;
+  letter-spacing: -0.1rem;
+}
+
+/* Project Cards Section */
+.project-cards {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 25svh;
+  background-color: #0f0f0f;
+}
+
+.card {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  padding: 1.5em;
+}
+
+.card-marquee {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+
+.marquee {
+  display: flex;
+}
+
+.marquee h1 {
+  white-space: nowrap;
+  font-size: 10vw;
+  font-weight: 600;
+  margin-right: 30px;
+  color: #fff;
+}
+
+.card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.card-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 150px;
+  overflow: hidden;
+}
+
+.card-img img {
+  transform: scale(2);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.card-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1;
+}
+
+.card-content .card-title {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.card-content .card-title h1 {
+  color: #fff;
+  font-size: 5rem;
+  font-weight: 500;
+  letter-spacing: -0.1rem;
+  line-height: 1.25;
+}
+
+.card-content .card-description {
+  text-align: center;
+  width: 40%;
+  margin-bottom: 3em;
+  position: relative;
+  transform: translateX(40px);
+  opacity: 0;
+}
+
+.card-content .card-description p {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.card:nth-child(2) {
+  margin-top: 50vh;
+}
+
+/* Character animation classes */
+.char {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.char span {
+  transform: translateX(100%);
+  display: inline-block;
+  will-change: transform;
+}
+
+/* Responsive Design for Project Cards */
+@media (max-width: 900px) {
+  .projects-intro h1,
+  .projects-outro h1 {
+    font-size: 2rem;
+    letter-spacing: 0;
+    width: 100%;
+  }
+
+  .card-content .card-title h1 {
+    font-size: 2rem;
+    letter-spacing: 0;
+  }
+
+  .card-content .card-description {
+    width: 90%;
+  }
+}
+
+/* ===== END PROJECT 3 STYLES ===== */

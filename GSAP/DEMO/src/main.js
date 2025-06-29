@@ -1,13 +1,17 @@
 import gsap from "gsap";
 import { Flip } from "gsap/Flip";
 import { SplitText } from "gsap/SplitText";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import { setupMarqueeAnimation } from "./marquee.js";
 
-gsap.registerPlugin(Flip, SplitText);
+gsap.registerPlugin(Flip, SplitText, ScrollTrigger);
 
 // Global variables
 let isOpen = false;
 let isAnimating = false;
 let loadingComplete = false;
+let lenis = null; // ADD THIS LINE
 
 // DOM Elements
 const container = document.querySelector(".container");
@@ -23,8 +27,9 @@ const body = document.body;
 const setupTextSpliting = () => {
   const textElements = document.querySelectorAll("h1, h2, p, a");
   textElements.forEach((element) => {
-    // Skip menu elements during initial setup
-    if (element.closest(".menu-overlay")) return;
+    // Skip menu elements and project cards during initial setup
+    if (element.closest(".menu-overlay") || element.closest(".project-cards"))
+      return;
 
     SplitText.create(element, {
       type: "lines",
@@ -257,7 +262,7 @@ function cleanupPreviewImage() {
 
 // Navigation scroll effect
 function handleNavScroll() {
-  const scrollY = window.scrollY;
+  const scrollY = lenis ? lenis.scroll : window.scrollY;
 
   if (scrollY > 50 && !isOpen) {
     mainNav.classList.add("scrolled");
@@ -379,6 +384,10 @@ function initLoadingSequence() {
       onComplete: () => {
         loadingComplete = true;
         body.classList.add("loaded"); // Enable scrolling and show demo section
+        // Initialize project cards after a short delay
+        setTimeout(() => {
+          initializeProjectCardsAnimation();
+        }, 1000);
       },
     },
     "<"
@@ -397,8 +406,224 @@ window.addEventListener("load", () => {
   body.classList.remove("menu-open");
 });
 
+// Initialize Lenis smooth scrolling
+function initializeLenis() {
+  lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    direction: "vertical",
+    gestureDirection: "vertical",
+    smooth: true,
+    mouseMultiplier: 1,
+    smoothTouch: false,
+    touchMultiplier: 2,
+    infinite: false,
+  });
+
+  lenis.on("scroll", (e) => {
+    ScrollTrigger.update();
+    handleNavScroll();
+  });
+
+  gsap.ticker.add((time) => {
+    lenis.raf(time * 1000);
+  });
+
+  gsap.ticker.lagSmoothing(0);
+}
+
+// Initialize Project Cards Animation
+function initializeProjectCardsAnimation() {
+  const projectCards = gsap.utils.toArray(".project-cards .card");
+  if (projectCards.length === 0) return;
+
+  const introCard = projectCards[0];
+
+  // Setup title animations for project cards
+  const projectTitles = gsap.utils.toArray(".project-cards .card-title h1");
+  projectTitles.forEach((title) => {
+    const split = new SplitText(title, {
+      type: "chars",
+      charsClass: "char",
+    });
+
+    split.chars.forEach((char) => {
+      char.innerHTML = `<span>${char.textContent}</span>`;
+      gsap.set(char.querySelector("span"), { x: "100%" });
+    });
+  });
+
+  // Setup first project card
+  const cardImgWrapper = introCard.querySelector(".card-img");
+  const cardImg = introCard.querySelector(".card-img img");
+
+  if (cardImgWrapper && cardImg) {
+    gsap.set(cardImgWrapper, { scale: 0.5, borderRadius: "400px" });
+    gsap.set(cardImg, { scale: 1.5 });
+  }
+
+  // Animation functions
+  function animateProjectContentIn(titleChars, description) {
+    gsap.to(titleChars, {
+      x: "0%",
+      duration: 0.75,
+      ease: "power4.out",
+      stagger: 0.02,
+    });
+    gsap.to(description, {
+      x: 0,
+      opacity: 1,
+      duration: 0.75,
+      delay: 0.1,
+      ease: "power4.out",
+    });
+  }
+
+  function animateProjectContentOut(titleChars, description) {
+    gsap.to(titleChars, {
+      x: "100%",
+      duration: 0.55,
+      ease: "power4.out",
+      stagger: 0.01,
+    });
+    gsap.to(description, {
+      x: "40px",
+      opacity: 0,
+      duration: 0.5,
+      delay: 0.1,
+      ease: "power4.out",
+    });
+  }
+
+  const marquee = introCard.querySelector(".card-marquee .marquee");
+  const titleChars = introCard.querySelectorAll(".char span");
+  const description = introCard.querySelector(".card-description");
+
+  if (description) {
+    gsap.set(description, { x: "40px", opacity: 0 });
+  }
+
+  // First project card scroll animation
+  if (cardImgWrapper && cardImg) {
+    ScrollTrigger.create({
+      trigger: introCard,
+      start: "top top",
+      end: "+=300vh",
+      pin: true,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const imageScale = 0.5 + progress * 0.5;
+        const borderRadius = 400 - progress * 375;
+        const innerImgScale = 1.5 - progress * 0.5;
+
+        gsap.set(cardImgWrapper, {
+          scale: imageScale,
+          borderRadius: borderRadius + "px",
+        });
+        gsap.set(cardImg, { scale: innerImgScale });
+
+        if (marquee) {
+          if (imageScale >= 0.5 && imageScale <= 0.75) {
+            const fadeProgress = (imageScale - 0.5) / (0.75 - 0.5);
+            gsap.set(marquee, { opacity: 1 - fadeProgress });
+          } else if (imageScale < 0.5) {
+            gsap.set(marquee, { opacity: 1 });
+          } else if (imageScale > 0.75) {
+            gsap.set(marquee, { opacity: 0 });
+          }
+        }
+
+        if (progress >= 1 && !introCard.contentRevealed) {
+          introCard.contentRevealed = true;
+          animateProjectContentIn(titleChars, description);
+        }
+        if (progress < 1 && introCard.contentRevealed) {
+          introCard.contentRevealed = false;
+          animateProjectContentOut(titleChars, description);
+        }
+      },
+    });
+
+    setupMarqueeAnimation();
+  }
+
+  // Other project cards
+  projectCards.forEach((card, index) => {
+    if (index === 0) return;
+
+    const isLastCard = index === projectCards.length - 1;
+
+    ScrollTrigger.create({
+      trigger: card,
+      start: "top top",
+      end: isLastCard ? "+=100vh" : "bottom top",
+      pin: true,
+      pinSpacing: isLastCard,
+    });
+
+    // Card wrapper scaling
+    if (index < projectCards.length - 1) {
+      const cardWrapper = card.querySelector(".card-wrapper");
+      if (cardWrapper) {
+        ScrollTrigger.create({
+          trigger: projectCards[index + 1],
+          start: "top bottom",
+          end: "top top",
+          onUpdate: (self) => {
+            const progress = self.progress;
+            gsap.set(cardWrapper, {
+              scale: 1 - progress * 0.25,
+              opacity: 1 - progress,
+            });
+          },
+        });
+      }
+    }
+
+    // Image scaling animation
+    const cardImg = card.querySelector(".card-img img");
+    const imgContainer = card.querySelector(".card-img");
+
+    if (cardImg && imgContainer) {
+      gsap.set(cardImg, { scale: 2 });
+      gsap.set(imgContainer, { borderRadius: "150px" });
+
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top bottom",
+        end: "top top",
+        onUpdate: (self) => {
+          const progress = self.progress;
+          gsap.set(cardImg, { scale: 2 - progress });
+          gsap.set(imgContainer, {
+            borderRadius: 150 - progress * 125 + "px",
+          });
+        },
+      });
+    }
+
+    // Content animation
+    const cardDescription = card.querySelector(".card-description");
+    const cardTitleChars = card.querySelectorAll(".char span");
+
+    if (cardDescription && cardTitleChars.length > 0) {
+      gsap.set(cardDescription, { x: "40px", opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger: card,
+        start: "top top",
+        onEnter: () => animateProjectContentIn(cardTitleChars, cardDescription),
+        onLeaveBack: () =>
+          animateProjectContentOut(cardTitleChars, cardDescription),
+      });
+    }
+  });
+}
+
 // Event listeners
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize Lenis smooth scrolling first
+  initializeLenis();
   // Initialize loading sequence
   initLoadingSequence();
 
@@ -462,11 +687,8 @@ document.addEventListener("DOMContentLoaded", () => {
     anchor.addEventListener("click", function (e) {
       e.preventDefault();
       const target = document.querySelector(this.getAttribute("href"));
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+      if (target && lenis) {
+        lenis.scrollTo(target);
       }
     });
   });
@@ -515,4 +737,5 @@ export {
   animateCounter,
   animateImages,
   animateBurgerMenu,
+  initializeProjectCardsAnimation,
 };
