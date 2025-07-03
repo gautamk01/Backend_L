@@ -150,7 +150,7 @@ nav {
   color: #8f8f8f;
 }
 
-.social:hover {
+.social a:hover {
   color: #fff;
 }
 

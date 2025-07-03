@@ -24,9 +24,21 @@ body {
   transition: overflow 0.3s ease;
 }
 
+/* Loading state - completely locked */
+body.loading {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+/* After loading - enable scrolling */
 body.loaded {
   overflow-x: hidden;
-  overflow-y: auto; /* Enable scroll after loading */
+  overflow-y: auto;
+  position: static;
+  height: auto;
+  width: auto;
 }
 
 body.menu-open {
@@ -64,6 +76,7 @@ p {
   line-height: 1;
   cursor: pointer;
 }
+
 /* Hide nav sections when menu is open, keep only close button */
 body.menu-open nav.main-nav .nav-left,
 body.menu-open nav.main-nav .nav-center {
@@ -97,13 +110,46 @@ nav.main-nav {
   align-items: center;
   padding: 0 2rem;
   z-index: 10;
-  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-nav.main-nav.scrolled {
-  background-color: rgba(241, 239, 231, 0.95);
-  backdrop-filter: saturate(180%) blur(10px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Hide logo and nav links when scrolling, keep menu toggle */
+nav.main-nav.scrolled .nav-left,
+nav.main-nav.scrolled .nav-center {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+/* Keep menu toggle visible and functional when scrolling */
+nav.main-nav.scrolled .nav-right {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Enhanced menu toggle styling when scrolling */
+nav.main-nav.scrolled .menu-toggle {
+  background: rgba(31, 31, 31, 0.9);
+  border-radius: 50%;
+  padding: 1.2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav.main-nav.scrolled .burger-line {
+  background-color: white;
+}
+
+/* Smooth transitions for all nav elements */
+.nav-left,
+.nav-center {
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.nav-right {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* Left Column - Logo */
@@ -157,6 +203,7 @@ nav.main-nav.scrolled {
   padding: 1rem;
   user-select: none;
   z-index: 11;
+  transition: background 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
 }
 
 .burger-menu {
@@ -168,20 +215,19 @@ nav.main-nav.scrolled {
   justify-content: space-between;
 }
 
-/* Burger Menu Styling with correct color states */
+/* Fixed Burger Line Animation */
 .burger-line {
   width: 100%;
   height: 2px;
-  background-color: black; /* black when closed */
-  /* Separate transitions for different properties */
+  background-color: black;
   transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55),
     opacity 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55),
-    background-color 3s ease; /* ✅ Fast color transition */
+    background-color 0.1s ease;
   transform-origin: center;
 }
 
 .menu-toggle.open .burger-line {
-  background-color: white; /* white when open */
+  background-color: white;
 }
 
 /* Burger Animation States */
@@ -207,6 +253,11 @@ nav.main-nav .divider {
   height: 1px;
   background-color: var(--stroke);
   transform-origin: left;
+  transform: scaleX(0%);
+}
+
+nav.main-nav.scrolled .divider {
+  opacity: 0;
   transform: scaleX(0%);
 }
 
@@ -241,6 +292,7 @@ nav.main-nav .divider {
   transform-origin: left bottom;
   will-change: transform, opacity;
 }
+
 .menu-content.open {
   opacity: 1;
   transform: translateX(0) translateY(0) scale(1) rotate(0deg);
@@ -253,9 +305,11 @@ nav.main-nav .divider {
   display: flex;
   gap: 2.5em;
 }
+
 .col-lg {
   flex: 3;
 }
+
 .col-sm {
   flex: 2;
 }
@@ -271,6 +325,7 @@ nav.main-nav .divider {
   width: 45%;
   height: 100%;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 .menu-preview-img img {
@@ -326,7 +381,7 @@ nav.main-nav .divider {
   left: 0;
   width: 100%;
   height: 2px;
-  background: #fff !important; /* Temporary !important for testing */
+  background: #fff;
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.3s cubic-bezier(0.6, 0, 0.4, 1);
@@ -454,6 +509,7 @@ nav.main-nav .divider {
   background-color: var(--stroke);
   transform-origin: top;
   transform: scaleY(0%);
+  transition: opacity 0.3s ease;
 }
 
 .header {
@@ -799,7 +855,8 @@ body.loaded .demo-section {
     transform: rotate(3deg) translate(50px, 100px) scale(1.1);
   }
 }
-/* ===== PROJECT 3 STYLES - ADD AT END OF CSS FILE ===== */
+
+/* ===== PROJECT 3 STYLES ===== */
 
 /* Projects Intro & Outro Sections */
 .projects-intro,
@@ -848,18 +905,24 @@ body.loaded .demo-section {
   left: 0;
   transform: translateY(-50%);
   overflow: hidden;
+  pointer-events: none;
+  user-select: none;
 }
 
 .marquee {
   display: flex;
+  white-space: nowrap;
+  will-change: transform;
 }
 
 .marquee h1 {
   white-space: nowrap;
   font-size: 10vw;
   font-weight: 600;
-  margin-right: 30px;
+  margin-right: 2rem;
+  padding-right: 2rem;
   color: #fff;
+  flex-shrink: 0;
 }
 
 .card-wrapper {
@@ -962,6 +1025,12 @@ body.loaded .demo-section {
 
   .card-content .card-description {
     width: 90%;
+  }
+
+  .marquee h1 {
+    font-size: 8vw;
+    margin-right: 1rem;
+    padding-right: 1rem;
   }
 }
 

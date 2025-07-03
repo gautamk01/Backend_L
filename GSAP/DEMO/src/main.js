@@ -11,7 +11,7 @@ gsap.registerPlugin(Flip, SplitText, ScrollTrigger);
 let isOpen = false;
 let isAnimating = false;
 let loadingComplete = false;
-let lenis = null; // ADD THIS LINE
+let lenis = null;
 
 // DOM Elements
 const container = document.querySelector(".container");
@@ -146,10 +146,10 @@ function animateImages() {
 function animateBurgerMenu(isOpening) {
   if (isOpening) {
     menuToggle.classList.add("open");
-    body.classList.add("menu-open"); // Disable scrolling
+    body.classList.add("menu-open");
   } else {
     menuToggle.classList.remove("open");
-    body.classList.remove("menu-open"); // Enable scrolling
+    body.classList.remove("menu-open");
   }
 }
 
@@ -158,27 +158,22 @@ function openMenu() {
   if (isAnimating || isOpen || !loadingComplete) return;
   isAnimating = true;
 
-  // Add open classes
   menuOverlay.classList.add("open");
   menuContent.classList.add("open");
   container.classList.add("menu-open");
 
-  // Animate burger menu
   animateBurgerMenu(true);
 
-  // Animate container transformation
   gsap.to(container, {
     duration: 1.25,
     ease: "power4.inOut",
   });
 
-  // Animate menu content
   gsap.to(menuContent, {
     duration: 1.25,
     ease: "power4.inOut",
   });
 
-  // Animate menu links and social links
   gsap.to([".link a", ".social a"], {
     y: "0%",
     opacity: 1,
@@ -188,7 +183,6 @@ function openMenu() {
     ease: "power3.out",
   });
 
-  // Animate menu overlay
   gsap.to(menuOverlay, {
     duration: 1.25,
     ease: "power4.inOut",
@@ -204,34 +198,28 @@ function closeMenu() {
   if (isAnimating || !isOpen) return;
   isAnimating = true;
 
-  // Remove open classes
   menuOverlay.classList.remove("open");
   menuContent.classList.remove("open");
   container.classList.remove("menu-open");
 
-  // Animate burger menu
   animateBurgerMenu(false);
 
-  // Animate container back to normal
   gsap.to(container, {
     duration: 1.25,
     ease: "power4.inOut",
   });
 
-  // Animate menu content
   gsap.to(menuContent, {
     duration: 1.25,
     ease: "power4.inOut",
   });
 
-  // Animate menu overlay
   gsap.to(menuOverlay, {
     duration: 1.25,
     ease: "power4.inOut",
     onComplete: () => {
       isOpen = false;
       isAnimating = false;
-      // Reset menu links
       gsap.set([".link a", ".social a"], { y: "120%", opacity: 0.25 });
       resetPreviewImage();
     },
@@ -263,151 +251,25 @@ function cleanupPreviewImage() {
 // Navigation scroll effect
 function handleNavScroll() {
   const scrollY = lenis ? lenis.scroll : window.scrollY;
+  const sidebarDivider = document.querySelector(".sidebar .divider");
 
-  if (scrollY > 50 && !isOpen) {
+  if (scrollY > 100 && !isOpen) {
     mainNav.classList.add("scrolled");
+    if (sidebarDivider) {
+      sidebarDivider.style.opacity = "0";
+    }
   } else {
     mainNav.classList.remove("scrolled");
+    if (sidebarDivider) {
+      sidebarDivider.style.opacity = "1";
+    }
   }
 }
 
-// Initialize loading sequence
-function initLoadingSequence() {
-  // Ensure page starts in proper loading state
-  body.classList.remove("loaded");
-  body.classList.remove("menu-open");
-  loadingComplete = false;
-
-  // Reset all elements to initial state
-  gsap.set(".img", { scale: 0 });
-  gsap.set(".hero-bg", { scaleY: "0%" });
-  gsap.set(".counter", { opacity: 1 });
-  gsap.set(".sidebar .divider", { scaleY: "0%" });
-  gsap.set(".site-info .divider", { scaleX: "0%" });
-  gsap.set(".sidebar .logo", { scale: 0 });
-  gsap.set([".header span", ".site-info span", ".hero-footer span"], {
-    y: "125%",
-  });
-  gsap.set([".nav-left .logo-name a span", ".nav-center .nav-links a span"], {
-    y: "125%",
-  });
-
-  setupTextSpliting();
-  createCounterDigits();
-
-  // Start counter animations
-  animateCounter(document.querySelector(".counter-3"), 2.5);
-  animateCounter(document.querySelector(".counter-2"), 3);
-  animateCounter(document.querySelector(".counter-1"), 2, 1.5);
-
-  // Main loading timeline
-  const loadingTimeline = gsap.timeline();
-
-  // Background loader animation
-  loadingTimeline.to(".hero-bg", {
-    scaleY: "100%",
-    duration: 3,
-    ease: "power2.inOut",
-    delay: 0.25,
-  });
-
-  // Images scale in
-  loadingTimeline.to(
-    ".img",
-    {
-      scale: 1,
-      duration: 1,
-      stagger: 0.125,
-      ease: "power3.out",
-    },
-    "<"
-  );
-
-  // Counter fade out and trigger image animation
-  loadingTimeline.to(".counter", {
-    opacity: 0,
-    duration: 0.3,
-    ease: "power3.out",
-    delay: 0.3,
-    onStart: () => {
-      animateImages();
-    },
-    onComplete: () => {
-      // Hide counter completely after loading
-      gsap.set(".counter", { display: "none" });
-    },
-  });
-
-  // UI elements reveal
-  loadingTimeline.to(".sidebar .divider", {
-    scaleY: "100%",
-    duration: 1,
-    ease: "power3.inOut",
-    delay: 1.25,
-  });
-
-  loadingTimeline.to([".main-nav .divider", ".site-info .divider"], {
-    scaleX: "100%",
-    duration: 1,
-    stagger: 0.5,
-    ease: "power3.inOut",
-  });
-
-  loadingTimeline.to(
-    ".sidebar .logo",
-    {
-      scale: 1,
-      duration: 1,
-      ease: "power4.inOut",
-    },
-    "<"
-  );
-
-  // Text animations
-  loadingTimeline.to(
-    [".nav-left .logo-name a span", ".nav-center .nav-links a span"],
-    {
-      y: "0%",
-      duration: 1,
-      stagger: 0.1,
-      ease: "power4.out",
-    }
-  );
-
-  loadingTimeline.to(
-    [".header span", ".site-info span", ".hero-footer span"],
-    {
-      y: "0%",
-      duration: 1,
-      stagger: 0.1,
-      ease: "power4.out",
-      onComplete: () => {
-        loadingComplete = true;
-        body.classList.add("loaded"); // Enable scrolling and show demo section
-        // Initialize project cards after a short delay
-        setTimeout(() => {
-          initializeProjectCardsAnimation();
-        }, 1000);
-      },
-    },
-    "<"
-  );
-}
-
-// Force page to start from top on refresh
-window.addEventListener("beforeunload", () => {
-  window.scrollTo(0, 0);
-});
-
-// Ensure proper initialization on page load/refresh
-window.addEventListener("load", () => {
-  window.scrollTo(0, 0);
-  body.classList.remove("loaded");
-  body.classList.remove("menu-open");
-});
-
 // Initialize Lenis smooth scrolling
 function initializeLenis() {
+  if (!loadingComplete) return;
+
   lenis = new Lenis({
     duration: 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -432,6 +294,123 @@ function initializeLenis() {
   gsap.ticker.lagSmoothing(0);
 }
 
+// Initialize loading sequence
+function initLoadingSequence() {
+  body.classList.add("loading");
+  body.classList.remove("loaded");
+  body.classList.remove("menu-open");
+  loadingComplete = false;
+
+  gsap.set(".img", { scale: 0 });
+  gsap.set(".hero-bg", { scaleY: "0%" });
+  gsap.set(".counter", { opacity: 1 });
+  gsap.set(".sidebar .divider", { scaleY: "0%" });
+  gsap.set(".site-info .divider", { scaleX: "0%" });
+  gsap.set(".sidebar .logo", { scale: 0 });
+  gsap.set([".header span", ".site-info span", ".hero-footer span"], {
+    y: "125%",
+  });
+  gsap.set([".nav-left .logo-name a span", ".nav-center .nav-links a span"], {
+    y: "125%",
+  });
+
+  setupTextSpliting();
+  createCounterDigits();
+
+  animateCounter(document.querySelector(".counter-3"), 2.5);
+  animateCounter(document.querySelector(".counter-2"), 3);
+  animateCounter(document.querySelector(".counter-1"), 2, 1.5);
+
+  const loadingTimeline = gsap.timeline();
+
+  loadingTimeline.to(".hero-bg", {
+    scaleY: "100%",
+    duration: 3,
+    ease: "power2.inOut",
+    delay: 0.25,
+  });
+
+  loadingTimeline.to(
+    ".img",
+    {
+      scale: 1,
+      duration: 1,
+      stagger: 0.125,
+      ease: "power3.out",
+    },
+    "<"
+  );
+
+  loadingTimeline.to(".counter", {
+    opacity: 0,
+    duration: 0.3,
+    ease: "power3.out",
+    delay: 0.3,
+    onStart: () => {
+      animateImages();
+    },
+    onComplete: () => {
+      gsap.set(".counter", { display: "none" });
+    },
+  });
+
+  loadingTimeline.to(".sidebar .divider", {
+    scaleY: "100%",
+    duration: 1,
+    ease: "power3.inOut",
+    delay: 1.25,
+  });
+
+  loadingTimeline.to([".main-nav .divider", ".site-info .divider"], {
+    scaleX: "100%",
+    duration: 1,
+    stagger: 0.5,
+    ease: "power3.inOut",
+  });
+
+  loadingTimeline.to(
+    ".sidebar .logo",
+    {
+      scale: 1,
+      duration: 1,
+      ease: "power4.inOut",
+    },
+    "<"
+  );
+
+  loadingTimeline.to(
+    [".nav-left .logo-name a span", ".nav-center .nav-links a span"],
+    {
+      y: "0%",
+      duration: 1,
+      stagger: 0.1,
+      ease: "power4.out",
+    }
+  );
+
+  loadingTimeline.to(
+    [".header span", ".site-info span", ".hero-footer span"],
+    {
+      y: "0%",
+      duration: 1,
+      stagger: 0.1,
+      ease: "power4.out",
+      onComplete: () => {
+        loadingComplete = true;
+        body.classList.remove("loading");
+        body.classList.add("loaded");
+
+        // Initialize smooth scrolling and project cards
+        setTimeout(() => {
+          initializeLenis();
+          initializeProjectCardsAnimation();
+        }, 500);
+      },
+    },
+    "<"
+  );
+}
+
 // Initialize Project Cards Animation
 function initializeProjectCardsAnimation() {
   const projectCards = gsap.utils.toArray(".project-cards .card");
@@ -439,7 +418,6 @@ function initializeProjectCardsAnimation() {
 
   const introCard = projectCards[0];
 
-  // Setup title animations for project cards
   const projectTitles = gsap.utils.toArray(".project-cards .card-title h1");
   projectTitles.forEach((title) => {
     const split = new SplitText(title, {
@@ -453,7 +431,6 @@ function initializeProjectCardsAnimation() {
     });
   });
 
-  // Setup first project card
   const cardImgWrapper = introCard.querySelector(".card-img");
   const cardImg = introCard.querySelector(".card-img img");
 
@@ -462,7 +439,6 @@ function initializeProjectCardsAnimation() {
     gsap.set(cardImg, { scale: 1.5 });
   }
 
-  // Animation functions
   function animateProjectContentIn(titleChars, description) {
     gsap.to(titleChars, {
       x: "0%",
@@ -503,7 +479,6 @@ function initializeProjectCardsAnimation() {
     gsap.set(description, { x: "40px", opacity: 0 });
   }
 
-  // First project card scroll animation
   if (cardImgWrapper && cardImg) {
     ScrollTrigger.create({
       trigger: introCard,
@@ -543,11 +518,11 @@ function initializeProjectCardsAnimation() {
         }
       },
     });
-
-    setupMarqueeAnimation();
   }
 
-  // Other project cards
+  // Setup marquee animation
+  setupMarqueeAnimation();
+
   projectCards.forEach((card, index) => {
     if (index === 0) return;
 
@@ -561,7 +536,6 @@ function initializeProjectCardsAnimation() {
       pinSpacing: isLastCard,
     });
 
-    // Card wrapper scaling
     if (index < projectCards.length - 1) {
       const cardWrapper = card.querySelector(".card-wrapper");
       if (cardWrapper) {
@@ -580,7 +554,6 @@ function initializeProjectCardsAnimation() {
       }
     }
 
-    // Image scaling animation
     const cardImg = card.querySelector(".card-img img");
     const imgContainer = card.querySelector(".card-img");
 
@@ -602,7 +575,6 @@ function initializeProjectCardsAnimation() {
       });
     }
 
-    // Content animation
     const cardDescription = card.querySelector(".card-description");
     const cardTitleChars = card.querySelectorAll(".char span");
 
@@ -620,14 +592,22 @@ function initializeProjectCardsAnimation() {
   });
 }
 
+// Force page to start from top on refresh
+window.addEventListener("beforeunload", () => {
+  window.scrollTo(0, 0);
+});
+
+window.addEventListener("load", () => {
+  window.scrollTo(0, 0);
+  body.classList.remove("loaded");
+  body.classList.remove("menu-open");
+});
+
 // Event listeners
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize Lenis smooth scrolling first
-  initializeLenis();
-  // Initialize loading sequence
+  // Set initial loading state and start loading sequence
+  body.classList.add("loading");
   initLoadingSequence();
-
-  // Initialize preview image
   resetPreviewImage();
 
   // Menu toggle event listener
@@ -679,9 +659,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Scroll event for navigation background
-  window.addEventListener("scroll", handleNavScroll);
-
   // Smooth scrolling for anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", function (e) {
@@ -700,7 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Prevent scroll when menu is open (additional safety)
+  // Prevent scroll when menu is open
   document.addEventListener(
     "wheel",
     (e) => {
@@ -714,12 +691,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle window resize
   window.addEventListener("resize", () => {
     if (isOpen && window.innerWidth <= 768) {
-      // Adjust menu for mobile if needed
       gsap.set(container, { clearProps: "all" });
     }
   });
 
-  // Prevent context menu on burger menu (optional UX improvement)
+  // Prevent context menu on burger menu
   if (menuToggle) {
     menuToggle.addEventListener("contextmenu", (e) => {
       e.preventDefault();
