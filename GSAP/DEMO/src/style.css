@@ -42,7 +42,7 @@ body.loaded {
 }
 
 body.menu-open {
-  overflow: hidden; /* Disable scroll when menu is open */
+  overflow: hidden !important;
 }
 
 img {
@@ -132,10 +132,25 @@ nav.main-nav.scrolled .nav-right {
 /* Enhanced menu toggle styling when scrolling */
 nav.main-nav.scrolled .menu-toggle {
   background: rgba(31, 31, 31, 0.9);
-  border-radius: 50%;
-  padding: 1.2rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+
+  /* --- Key Changes --- */
+
+  /* 1. Set border-radius to 50% for a perfect circle */
+  border-radius: 50%;
+
+  /* 2. Define equal width and height */
+  width: 60px; /* Adjust size as needed */
+  height: 60px; /* Must be equal to width */
+
+  /* 3. Use flexbox to center the icon inside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 4. Remove padding to rely on fixed dimensions */
+  padding: 0;
 }
 
 nav.main-nav.scrolled .burger-line {
@@ -856,182 +871,166 @@ body.loaded .demo-section {
   }
 }
 
-/* ===== PROJECT 3 STYLES ===== */
+/* ===== STICKY CARDS SECTION STYLES ===== */
 
-/* Projects Intro & Outro Sections */
-.projects-intro,
-.projects-outro {
+.sticky-cards-section {
   position: relative;
   width: 100vw;
-  height: 100svh;
-  background-color: #0f0f0f;
-  color: #fff;
-  padding: 1.5em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.projects-intro h1,
-.projects-outro h1 {
-  width: 60%;
-  text-align: center;
-  line-height: 1.1;
-  font-size: 5rem;
-  font-weight: 500;
-  letter-spacing: -0.1rem;
-}
-
-/* Project Cards Section */
-.project-cards {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 25svh;
-  background-color: #0f0f0f;
-}
-
-.card {
-  position: relative;
-  width: 100vw;
-  height: 100svh;
-  padding: 1.5em;
-}
-
-.card-marquee {
-  width: 100%;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
+  height: 100vh;
+  background-color: var(--loader-bg);
   overflow: hidden;
-  pointer-events: none;
-  user-select: none;
-}
-
-.marquee {
-  display: flex;
-  white-space: nowrap;
-  will-change: transform;
-}
-
-.marquee h1 {
-  white-space: nowrap;
-  font-size: 10vw;
-  font-weight: 600;
-  margin-right: 2rem;
-  padding-right: 2rem;
-  color: #fff;
-  flex-shrink: 0;
-}
-
-.card-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  will-change: transform;
-}
-
-.card-img {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 150px;
-  overflow: hidden;
-}
-
-.card-img img {
-  transform: scale(2);
-  position: relative;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  will-change: transform;
-}
-
-.card-content {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   z-index: 1;
 }
 
-.card-content .card-title {
-  width: 100%;
+.sticky-header {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.card-content .card-title h1 {
-  color: #fff;
-  font-size: 5rem;
-  font-weight: 500;
-  letter-spacing: -0.1rem;
-  line-height: 1.25;
-}
-
-.card-content .card-description {
-  text-align: center;
-  width: 40%;
-  margin-bottom: 3em;
-  position: relative;
-  transform: translateX(40px);
-  opacity: 0;
-}
-
-.card-content .card-description p {
-  font-size: 1.125rem;
-  font-weight: 400;
-  line-height: 1.2;
-  color: #fff;
-}
-
-.card:nth-child(2) {
-  margin-top: 50vh;
-}
-
-/* Character animation classes */
-.char {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-
-.char span {
-  transform: translateX(100%);
-  display: inline-block;
+  top: 0;
+  left: 0;
+  width: 250vw;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   will-change: transform;
 }
 
-/* Responsive Design for Project Cards */
-@media (max-width: 900px) {
-  .projects-intro h1,
-  .projects-outro h1 {
+.sticky-header h1 {
+  margin: 0;
+  color: #000;
+  font-size: 20vw;
+  font-weight: normal;
+  letter-spacing: -0.05em;
+  line-height: 100%;
+}
+
+.sticky-card {
+  position: absolute;
+  top: 10%;
+  left: 100%;
+  width: 350px;
+  height: auto; /* Dynamic height based on content */
+  min-height: 400px; /* Minimum height */
+  max-height: 450px; /* Maximum height to prevent overflow */
+  background-color: #000;
+  border-radius: 1rem;
+  padding: 1rem; /* Increased padding */
+  will-change: transform;
+  z-index: 2;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sticky-card .card-img {
+  width: 100%;
+  height: 180px; /* Reduced from 200px */
+  border-radius: 0.5rem;
+  overflow: hidden;
+  flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.sticky-card .card-content {
+  flex: 1; /* Take remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribute content evenly */
+  padding: 1rem 0.5rem 0.5rem 0.5rem; /* Top, right, bottom, left */
+  min-height: 0; /* Allow shrinking */
+}
+
+.sticky-card .card-content h2 {
+  font-size: 2rem; /* Reduced from 2.5rem */
+  font-weight: 400; /* Reduced weight */
+  letter-spacing: -0.02em;
+  margin-bottom: 0.8rem; /* Reduced margin */
+  color: #fff;
+  line-height: 1.2;
+}
+
+.sticky-card .card-content p {
+  font-size: 1rem; /* Reduced from 1.1rem */
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: #fff;
+  margin: 0; /* Remove default margins */
+  flex-grow: 1; /* Take available space */
+}
+.card {
+  position: absolute;
+  top: 10%;
+  left: 100%;
+  width: 350px;
+  height: 500px;
+  background-color: #000;
+  border-radius: 1em;
+  padding: 0.5em;
+  will-change: transform;
+  z-index: 2;
+}
+
+.card .card-img {
+  width: 100%;
+  height: 200px;
+  border-radius: 0.5em;
+  overflow: hidden;
+}
+
+.card-content {
+  width: 100%;
+  height: 275px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  padding: 0.5em;
+}
+
+.card-content h2 {
+  font-size: 42px;
+  font-weight: lighter;
+  letter-spacing: -0.005em;
+}
+
+.card-content h4 {
+  font-size: 20px;
+  font-weight: lighter;
+  letter-spacing: -0.005em;
+  color: #e0e0d8;
+}
+/* Responsive Design for Sticky Cards */
+@media (max-width: 1000px) {
+  .sticky-header h1 {
+    font-size: 15vw;
+  }
+
+  .sticky-card .card-content h2 {
     font-size: 2rem;
-    letter-spacing: 0;
-    width: 100%;
   }
 
-  .card-content .card-title h1 {
-    font-size: 2rem;
-    letter-spacing: 0;
+  .sticky-card .card-content p {
+    font-size: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .sticky-card {
+    width: 280px;
+    min-height: 320px;
+    max-height: 350px;
+    top: 20%; /* Adjust position */
   }
 
-  .card-content .card-description {
-    width: 90%;
+  .sticky-card .card-img {
+    height: 140px;
   }
 
-  .marquee h1 {
-    font-size: 8vw;
-    margin-right: 1rem;
-    padding-right: 1rem;
+  .sticky-card .card-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .sticky-card .card-content p {
+    font-size: 0.9rem;
   }
 }
 
-/* ===== END PROJECT 3 STYLES ===== */
+/* ===== END STICKY CARDS SECTION STYLES ===== */
