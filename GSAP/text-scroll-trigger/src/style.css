@@ -1,0 +1,165 @@
+@import url("https://fonts.cdnfonts.com/css/pp-neue-montreal");
+
+:root {
+  --bg: #f1efe7;
+  --fg: #1f1f1f;
+  --loader-bg: #e0e0d8;
+  --stroke: rgba(0, 0, 0, 0.2);
+  --accent1: #fe6d38; /* Example Accent */
+  --accent2: #c6fe69; /* Example Accent */
+  --accent3: #7a78ff; /* Example Accent */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "PP Neue Montreal", sans-serif;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+section {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  padding: 2em;
+  overflow: hidden;
+}
+
+.copy-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 2rem;
+}
+
+.copy-container h1 {
+  width: 70%;
+  color: var(--fg);
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.hero .copy-container,
+.cta .copy-container,
+.outro .copy-container {
+  background-color: var(--loader-bg);
+}
+
+.about .copy-container,
+.features .copy-container {
+  border: 0.15rem dashed var(--stroke);
+}
+
+.anime-text {
+  width: 60%;
+}
+
+.anime-text p {
+  color: var(--fg);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 900;
+  line-height: 1;
+  font-size: 30px;
+}
+
+.anime-text .word {
+  display: inline-block;
+  position: relative;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 2rem;
+  will-change: background-color, opacity;
+}
+
+.anime-text .word.keyword-wrapper {
+  margin: 0 0.4rem 0.2rem;
+}
+
+.anime-text .word span {
+  position: relative;
+}
+
+.anime-text .word span.keyword {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  border-radius: 2rem;
+  padding: 0.1rem 0;
+  color: var(--bg);
+}
+
+.anime-text .word span.keyword::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 1rem);
+  height: calc(100% + 0.4rem);
+  background-color: var(--fg);
+  border-radius: 2rem;
+  z-index: -1;
+}
+
+.anime-text .word span.keyword.vibrant::before,
+.anime-text .word span.keyword.shape::before,
+.anime-text .word span.keyword.interactive::before,
+.anime-text .word span.keyword.next-js::before,
+.anime-text .word span.keyword.saas::before {
+  background-color: var(--accent3);
+}
+.anime-text .word span.keyword.living::before,
+.anime-text .word span.keyword.expression::before,
+.anime-text .word span.keyword.storytelling::before,
+.anime-text .word span.keyword.python::before,
+.anime-text .word span.keyword.rag::before {
+  background-color: var(--accent1);
+}
+.anime-text .word span.keyword.clarity::before,
+.anime-text .word span.keyword.intuitive::before,
+.anime-text .word span.keyword.vision::before,
+.anime-text .word span.keyword.react::before,
+.anime-text .word span.keyword.langchain::before {
+  background-color: var(--accent2);
+}
+
+.anime-text .word,
+.anime-text .word span {
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .copy-container h1 {
+    width: 90%;
+    font-size: 2rem;
+  }
+
+  .anime-text {
+    width: 90%;
+  }
+
+  .anime-text p {
+    font-size: 1.25rem;
+  }
+
+  .anime-text .word {
+    margin-right: 0.1rem;
+    margin-bottom: 0.15rem;
+    padding: 0.1rem 0.2rem;
+  }
+
+  .anime-text .word.keyword-wrapper {
+    margin: 0 0.2rem 0.1rem 0.1rem;
+  }
+}

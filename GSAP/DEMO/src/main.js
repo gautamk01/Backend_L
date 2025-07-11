@@ -46,6 +46,7 @@ const setupTextSpliting = () => {
 };
 
 // Scroll Management System
+// Scroll Management System
 const ScrollManager = {
   disableScroll() {
     // Store current scroll position
@@ -56,11 +57,12 @@ const ScrollManager = {
       lenis.stop();
     }
 
-    // Apply fixed positioning to prevent scroll
-    body.style.position = "fixed";
-    body.style.top = `-${scrollPosition}px`;
-    body.style.width = "100%";
+    // FIXED: Apply scroll prevention WITHOUT position jumping
     body.style.overflow = "hidden";
+    body.style.height = "100vh";
+
+    // Keep the page content in the same visual position
+    body.style.paddingRight = this.getScrollbarWidth() + "px";
   },
 
   enableScroll() {
@@ -69,16 +71,32 @@ const ScrollManager = {
       lenis.start();
     }
 
-    // Remove fixed positioning
-    body.style.position = "";
-    body.style.top = "";
-    body.style.width = "";
+    // FIXED: Remove scroll prevention smoothly
     body.style.overflow = "";
+    body.style.height = "";
+    body.style.paddingRight = "";
 
-    // Restore scroll position
+    // Restore scroll position WITHOUT jumping
     if (scrollPosition !== undefined) {
       window.scrollTo(0, scrollPosition);
     }
+  },
+
+  // Helper function to get scrollbar width
+  getScrollbarWidth() {
+    const outer = document.createElement("div");
+    outer.style.visibility = "hidden";
+    outer.style.overflow = "scroll";
+    outer.style.msOverflowStyle = "scrollbar";
+    document.body.appendChild(outer);
+
+    const inner = document.createElement("div");
+    outer.appendChild(inner);
+
+    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+    outer.parentNode.removeChild(outer);
+
+    return scrollbarWidth;
   },
 };
 
@@ -502,6 +520,7 @@ function initLoadingSequence() {
           setTimeout(() => {
             initializeLenis();
             StickyCards.initialize();
+            ContactForm.initialize();
           }, 500);
         },
       },
@@ -623,6 +642,208 @@ document.addEventListener("DOMContentLoaded", () => {
     menuToggle.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 });
+
+// ===== CONTACT FORM SYSTEM =====
+const ContactForm = {
+  initialize() {
+    const contactSection = document.querySelector(".contact-section");
+    if (!contactSection) return;
+
+    this.setupAnimations();
+    this.setupFormHandling();
+  },
+
+  setupAnimations() {
+    // Animate contact header
+    ScrollTrigger.create({
+      trigger: ".contact-header",
+      start: "top 80%",
+      onEnter: () => {
+        this.animateHeader();
+      },
+    });
+
+    // Animate contact info items
+    ScrollTrigger.create({
+      trigger: ".contact-info",
+      start: "top 80%",
+      onEnter: () => {
+        this.animateContactInfo();
+      },
+    });
+
+    // Animate contact form
+    ScrollTrigger.create({
+      trigger: ".contact-form-wrapper",
+      start: "top 80%",
+      onEnter: () => {
+        this.animateForm();
+      },
+    });
+  },
+
+  animateHeader() {
+    const title = document.querySelector(".contact-title h1");
+    const subtitle = document.querySelector(".contact-subtitle p");
+
+    if (title) {
+      gsap.fromTo(
+        title,
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      );
+    }
+
+    if (subtitle) {
+      gsap.fromTo(
+        subtitle,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, delay: 0.3, ease: "power3.out" }
+      );
+    }
+  },
+
+  animateContactInfo() {
+    const infoItems = document.querySelectorAll(".info-item");
+    const socialLinks = document.querySelectorAll(".social-link");
+
+    gsap.to(infoItems, {
+      x: 0,
+      opacity: 1,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: "power3.out",
+    });
+
+    gsap.to(socialLinks, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.1,
+      delay: 0.8,
+      ease: "power3.out",
+    });
+  },
+
+  animateForm() {
+    const formWrapper = document.querySelector(".contact-form-wrapper");
+    const labels = document.querySelectorAll(".form-group label");
+    const inputs = document.querySelectorAll(
+      ".form-group input, .form-group textarea"
+    );
+    const submitBtn = document.querySelector(".submit-btn");
+
+    // Animate form wrapper
+    gsap.to(formWrapper, {
+      y: 0,
+      opacity: 1,
+      duration: 1,
+      ease: "power3.out",
+    });
+
+    // Animate form elements
+    gsap.to(labels, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.1,
+      delay: 0.3,
+      ease: "power3.out",
+    });
+
+    gsap.to(inputs, {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.1,
+      delay: 0.5,
+      ease: "power3.out",
+    });
+
+    gsap.to(submitBtn, {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      delay: 0.8,
+      ease: "power3.out",
+    });
+  },
+
+  setupFormHandling() {
+    const form = document.getElementById("contactForm");
+    if (!form) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.handleSubmit(form);
+    });
+
+    // Add focus animations for form inputs
+    const inputs = form.querySelectorAll("input, textarea");
+    inputs.forEach((input) => {
+      input.addEventListener("focus", () => {
+        gsap.to(input.nextElementSibling, {
+          width: "100%",
+          duration: 0.4,
+          ease: "power2.out",
+        });
+      });
+
+      input.addEventListener("blur", () => {
+        if (!input.value) {
+          gsap.to(input.nextElementSibling, {
+            width: "0%",
+            duration: 0.4,
+            ease: "power2.out",
+          });
+        }
+      });
+    });
+  },
+
+  handleSubmit(form) {
+    const submitBtn = form.querySelector(".submit-btn");
+    const btnText = submitBtn.querySelector(".btn-text");
+    const btnArrow = submitBtn.querySelector(".btn-arrow");
+
+    // Animate button on submit
+    gsap.to(submitBtn, {
+      scale: 0.95,
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+    });
+
+    // Change button text
+    btnText.textContent = "Sending...";
+    btnArrow.textContent = "⏳";
+
+    // Simulate form submission (replace with actual form handling)
+    setTimeout(() => {
+      btnText.textContent = "Message Sent!";
+      btnArrow.textContent = "✓";
+
+      gsap.to(submitBtn, {
+        backgroundColor: "#4CAF50",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+
+      // Reset form after delay
+      setTimeout(() => {
+        form.reset();
+        btnText.textContent = "Send Message";
+        btnArrow.textContent = "→";
+        gsap.to(submitBtn, {
+          backgroundColor: "var(--fg)",
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }, 2000);
+    }, 1500);
+  },
+};
 
 // Export functions for potential external use
 export {
