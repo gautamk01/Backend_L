@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./src/style.css" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project section | Scroll animation</title>
+  </head>
+  <body>
+    <!-- intro section -->
+    <section class="intro">
+      <h1>A curated series of surreal frames.</h1>
+    </section>
+
+    <!-- spotlightsection -->
+    <section class="spotlight">
+      <div class="spotlight-intro-text-wrapper">
+        <div class="spotlight-intro-text">
+          <p>Beneath</p>
+        </div>
+        <div class="spotlight-intro-text">
+          <p>Beneath</p>
+        </div>
+      </div>
+
+      <div class="spotlight-bg-img">
+        <img src="/img-1.png" alt="" />
+      </div>
+
+      <div class="spotlight-titles-container">
+        <div class="spotlight-titles"></div>
+      </div>
+
+      <div class="spotlight-images"></div>
+
+      <div class="spotlight-header">
+        <p>Discover</p>
+      </div>
+    </section>
+
+    <!-- Spotlight Modal -->
+    <div id="spotlight-modal" class="spotlight-modal">
+      <button class="spotlight-modal__close" aria-label="close">✕</button>
+
+      <h2 class="spotlight-modal__title"></h2>
+      <p class="spotlight-modal__desc">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </p>
+      <button class="spotlight-modal__btn">View project</button>
+    </div>
+    <!-- outro section -->
+    <section class="outro">
+      <h1>Moments in still motion</h1>
+    </section>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

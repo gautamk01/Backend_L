@@ -1636,57 +1636,66 @@ body.loaded .demo-section {
 
 /* ===== END SIMPLE FOOTER STYLES ===== */
 /* ===== PORTFOLIO ABOUT ME SECTION STYLES ===== */
+/* ===== PORTFOLIO ABOUT ME V6 (Final & Fully Responsive) ===== */
 
+/* --- Main Section Styling --- */
 .portfolio-about {
-  height: auto;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1em;
-  padding-bottom: 0;
+  padding: clamp(2rem, 5vh, 4rem) 1rem;
+  min-height: 100vh;
   background-color: var(--loader-bg);
   color: var(--fg);
+  overflow-x: hidden;
 }
 
+/* --- UNIVERSALLY RESPONSIVE SECTION TITLE --- */
 .portfolio-profile-title {
-  font-size: clamp(2.5rem, 8vw, 6rem);
+  /*
+  * THE FIX: This `clamp()` function makes the font size fluid.
+  * It sets a minimum size (2rem), a preferred size that scales with the screen width (8vw),
+  * and a maximum size (4.5rem). This works perfectly for all sections.
+  */
+  font-size: clamp(2rem, 8vw, 4.5rem);
   font-weight: 500;
-  padding: 0.5em 0;
   text-align: center;
-  width: 100%;
   color: var(--fg);
+  margin-bottom: clamp(1rem, 3vh, 2rem); /* Responsive bottom margin */
 }
 
+/* --- Content Container --- */
 .portfolio-copy-container {
   border: 0.15rem dashed var(--stroke);
-  border-radius: 2rem;
-  padding: 3em;
+  border-radius: 1.5rem;
+  padding: clamp(1rem, 4vw, 2.5rem);
   width: 90%;
   max-width: 1200px;
+  display: flex;
+  flex-direction: column;
 }
 
+/* --- Content Wrapper (Mobile First) --- */
 .portfolio-content-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
-  gap: 3em;
+  gap: clamp(1rem, 3vh, 2rem);
 }
 
-.portfolio-anime-text {
-  flex: 1;
-}
-
+/* --- Image Container Styling --- */
 .portfolio-image-container {
-  flex: 1;
+  order: 1;
+  width: clamp(120px, 40%, 220px);
+  aspect-ratio: 1 / 1;
   border-radius: 1rem;
   overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
   will-change: clip-path;
   clip-path: inset(100% 0 0 0);
-  max-height: 500px;
-  aspect-ratio: 4 / 5;
 }
 
 .portfolio-image-container img {
@@ -1695,14 +1704,20 @@ body.loaded .demo-section {
   object-fit: cover;
 }
 
-.portfolio-anime-text p {
-  color: var(--fg);
-  font-weight: 500;
-  line-height: 1.6;
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
-  text-align: justify;
+/* --- Animated Text Styling --- */
+.portfolio-anime-text {
+  order: 2;
+  width: 100%;
 }
 
+.portfolio-anime-text p {
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  font-size: clamp(0.85rem, 2.2vh, 1.1rem);
+}
+
+/* (Keyword styling is unchanged) */
 .portfolio-anime-text .word {
   display: inline-block;
   position: relative;
@@ -1711,16 +1726,15 @@ body.loaded .demo-section {
   padding: 0.1rem 0.2rem;
   border-radius: 2rem;
   will-change: background-color, opacity;
+  opacity: 0;
 }
-
 .portfolio-anime-text .word.keyword-wrapper {
   margin: 0 0.4rem 0.2rem;
 }
-
 .portfolio-anime-text .word span {
   position: relative;
+  opacity: 0;
 }
-
 .portfolio-anime-text .word span.keyword {
   display: inline-block;
   width: 100%;
@@ -1729,7 +1743,6 @@ body.loaded .demo-section {
   padding: 0.1rem 0;
   color: #141414;
 }
-
 .portfolio-anime-text .word span.keyword::before {
   content: "";
   position: absolute;
@@ -1742,7 +1755,6 @@ body.loaded .demo-section {
   border-radius: 2rem;
   z-index: -1;
 }
-
 .portfolio-anime-text .word span.keyword.technology::before,
 .portfolio-anime-text .word span.keyword.SaaS::before,
 .portfolio-anime-text .word span.keyword.AI::before {
@@ -1759,83 +1771,38 @@ body.loaded .demo-section {
   background-color: #c6fe69;
 }
 
-.portfolio-anime-text .word,
-.portfolio-anime-text .word span {
-  opacity: 0;
-}
-
-/* Responsive Design for About Section */
-@media (max-width: 1000px) {
-  .portfolio-about {
-    padding: 2em 1em;
-  }
-
-  .portfolio-copy-container {
-    padding: 2em;
-  }
-
+/* --- Tablet & Desktop Layout --- */
+@media (min-width: 768px) {
   .portfolio-content-wrapper {
-    flex-direction: column;
-    gap: 2em;
+    flex-direction: row;
+    gap: 3rem;
   }
-
   .portfolio-image-container {
-    max-height: 300px;
-    aspect-ratio: 1 / 1;
+    order: 2;
+    width: 40%;
+    max-width: 400px;
+    aspect-ratio: 4 / 5;
   }
-
+  .portfolio-anime-text {
+    order: 1;
+    width: 60%;
+  }
   .portfolio-anime-text p {
-    font-size: 1.1rem;
-  }
-}
-/* MOBILE OVERFLOW AND WHITE SPACE FIXES */
-/* MOBILE PINNING OPTIMIZATION */
-@media (max-width: 768px) {
-  /* Ensure pinned section doesn't overflow */
-  .portfolio-anime-text-container {
-    width: 100% !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    position: relative;
-  }
-
-  /* Prevent horizontal scrolling during pinning */
-  .portfolio-anime-text-container.pin-spacer {
-    overflow-x: hidden !important;
-    width: 100% !important;
-  }
-
-  /* Ensure text words don't cause overflow */
-  .portfolio-anime-text .word {
-    max-width: 100% !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-  }
-
-  /* Fix any pinning-related layout issues */
-  .portfolio-anime-text-container._pinned {
-    width: 100vw !important;
-    left: 0 !important;
-    transform: translateX(0) !important;
+    text-align: left;
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
   }
 }
 
-@media (max-width: 600px) {
-  .portfolio-profile-title {
-    font-size: 2.5rem;
+/* --- Large Desktop Layout (Image on the left) --- */
+@media (min-width: 1024px) {
+  .portfolio-content-wrapper {
+    gap: 4rem;
   }
-
-  .portfolio-copy-container {
-    padding: 1.5em;
-  }
-
   .portfolio-image-container {
-    max-height: 250px;
+    order: 1;
   }
-
-  .portfolio-anime-text p {
-    font-size: 1rem;
+  .portfolio-anime-text {
+    order: 2;
   }
 }
-
 /* ===== END PORTFOLIO ABOUT ME SECTION STYLES ===== */
