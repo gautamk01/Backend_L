@@ -304,7 +304,7 @@ const Menu = {
   resetPreviewImage() {
     if (!DOM.menuPreviewImg) return;
     DOM.menuPreviewImg.innerHTML =
-      '<img src="/resume.png" alt="Resume Preview">';
+      '<img src="/resume.jpeg" alt="Resume Preview">';
   },
   cleanupPreviewImage() {
     if (!DOM.menuPreviewImg) return;
@@ -465,6 +465,7 @@ const LoadingSequence = {
     PortfolioAbout.initialize();
     initStickyCardsEntrance();
     StickyCards.initialize();
+    setupProjectsSpotlight();
     ContactForm.initialize();
     cleanupScrollTriggers();
     ScrollTrigger.refresh();
@@ -853,6 +854,292 @@ function setupEventListeners() {
       }
     });
   });
+}
+
+// ===== PROJECTS SPOTLIGHT FUNCTIONALITY =====
+
+function setupProjectsSpotlight() {
+  const projectsSpotlightConfig = {
+    gap: 0.08,
+    speed: 0.5,
+    arcRadius: 500,
+  };
+
+  const projectsSpotlightItems = [
+    {
+      name: "Aurora SaaS",
+      img: "/img-1.png",
+      desc: "Advanced SaaS platform with modern UI/UX",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+    {
+      name: "RAG Music AI",
+      img: "/img-2.png",
+      desc: "AI-powered music recommendation system",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+    {
+      name: "Data Analytics",
+      img: "/img-3.png",
+      desc: "Big data visualization dashboard",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+    {
+      name: "ML Pipeline",
+      img: "/img-4.png",
+      desc: "Machine learning processing pipeline",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+
+    {
+      name: "Data Analytics",
+      img: "/img-5.png",
+      desc: "Big data visualization dashboard",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+    {
+      name: "Data Analytics",
+      img: "/img-6.png",
+      desc: "Big data visualization dashboard",
+      liveUrl: "#",
+      gitUrl: "#",
+    },
+  ];
+
+  const projectsLive = {
+    get vh() {
+      return window.innerHeight;
+    },
+    get vw() {
+      return window.innerWidth;
+    },
+    get w75() {
+      return this.vw * 0.75;
+    },
+    get end() {
+      return `+=${this.vh * 10}px`;
+    },
+    get arc() {
+      const startX = this.w75 - 220;
+      const cpX = startX + 500;
+      const cpY = this.vh / 2;
+      return { startX, cpX, cpY };
+    },
+  };
+
+  // DOM Elements
+  const projectsTitlesContainer = document.querySelector(".projects-titles");
+  const projectsImagesContainer = document.querySelector(".projects-images");
+  const projectsHeader = document.querySelector(".projects-header");
+  const projectsTitlesContainerElement = document.querySelector(
+    ".projects-titles-container"
+  );
+  const projectsIntroTextElements = document.querySelectorAll(
+    ".projects-intro-text"
+  );
+  const projectsImageElements = [];
+
+  if (!projectsTitlesContainer || !projectsImagesContainer) return;
+
+  // Create project elements
+  projectsSpotlightItems.forEach((item, index) => {
+    const titleElement = document.createElement("h1");
+    titleElement.textContent = item.name;
+    if (index === 0) titleElement.style.opacity = "1";
+    projectsTitlesContainer.appendChild(titleElement);
+
+    const imgWrapper = document.createElement("div");
+    imgWrapper.className = "projects-img";
+    const imgElement = document.createElement("img");
+    imgElement.src = item.img;
+    imgElement.alt = item.name;
+    imgWrapper.appendChild(imgElement);
+    projectsImagesContainer.appendChild(imgWrapper);
+    projectsImageElements.push(imgWrapper);
+  });
+
+  const projectsTitleElements = projectsTitlesContainer.querySelectorAll("h1");
+  let projectsCurrentActiveIndex = 0;
+
+  function getProjectsBezierPosition(t) {
+    const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const w75 = vw * 0.75;
+    const startX = w75 - 220;
+    const cpX = startX + 500;
+    const cpY = vh / 2;
+    const startY = -200;
+    const endY = vh + 200;
+
+    const x = (1 - t) ** 2 * startX + 2 * (1 - t) * t * cpX + t ** 2 * startX;
+    const y = (1 - t) ** 2 * startY + 2 * (1 - t) * t * cpY + t ** 2 * endY;
+
+    return { x, y };
+  }
+
+  function getProjectsImgProgressState(index, overallProgress) {
+    const startTime = index * projectsSpotlightConfig.gap;
+    const endTime = startTime + projectsSpotlightConfig.speed;
+
+    if (overallProgress < startTime) return -1;
+    if (overallProgress > endTime) return 2;
+    return (overallProgress - startTime) / projectsSpotlightConfig.speed;
+  }
+
+  projectsImageElements.forEach((img) => gsap.set(img, { opacity: 0 }));
+
+  ScrollTrigger.create({
+    trigger: ".projects-spotlight",
+    start: "top top",
+    end: projectsLive.end,
+    pin: true,
+    pinSpacing: true,
+    scrub: 1,
+    onUpdate: (self) => {
+      const p = self.progress;
+
+      /* 1️⃣  Intro 0 – 20 %  */
+      if (p <= 0.2) {
+        gsap.set(projectsIntroTextElements[0], {
+          x: -(p / 0.2) * window.innerWidth * 0.6,
+          opacity: 1,
+        });
+        gsap.set(projectsIntroTextElements[1], {
+          x: (p / 0.2) * window.innerWidth * 0.6,
+          opacity: 1,
+        });
+        gsap.set(".projects-bg-img", { scale: p / 0.2 });
+        gsap.set(".projects-bg-img img", { scale: 1.5 - (p / 0.2) * 0.5 });
+        gsap.set(projectsImageElements, { opacity: 0 });
+        if (projectsHeader) projectsHeader.style.opacity = 0;
+        gsap.set(projectsTitlesContainerElement, {
+          "--before-opacity": 0,
+          "--after-opacity": 0,
+        });
+        return;
+      }
+
+      /* 2️⃣  Fade-through 20 – 25 %  */
+      if (p > 0.2 && p <= 0.25) {
+        gsap.set(".projects-bg-img", { scale: 1 });
+        gsap.set(".projects-bg-img img", { scale: 1 });
+        gsap.set(projectsIntroTextElements, { opacity: 0 });
+        gsap.set(projectsImageElements, { opacity: 0 });
+        if (projectsHeader) projectsHeader.style.opacity = 1;
+        gsap.set(projectsTitlesContainerElement, {
+          "--before-opacity": 0,
+          "--after-opacity": 0,
+        });
+        return;
+      }
+
+      /* 3️⃣  Images fly 25 – 95 %  */
+      if (p > 0.25 && p <= 0.95) {
+        const switchProgress = (p - 0.25) / 0.7;
+        const vh = window.innerHeight;
+        const h = projectsTitlesContainer.scrollHeight;
+        const y = vh - switchProgress * (vh + h);
+        gsap.set(".projects-titles", { y });
+
+        projectsImageElements.forEach((img, idx) => {
+          const imgP = getProjectsImgProgressState(idx, switchProgress);
+          if (imgP >= 0 && imgP <= 1) {
+            const pos = getProjectsBezierPosition(imgP);
+            gsap.set(img, { x: pos.x - 100, y: pos.y - 75, opacity: 1 });
+          } else {
+            gsap.set(img, { opacity: 0 });
+          }
+        });
+
+        /* highlight closest title */
+        const mid = vh / 2;
+        let closest = 0,
+          min = Infinity;
+        projectsTitleElements.forEach((t, i) => {
+          const d = Math.abs(
+            t.getBoundingClientRect().top + t.offsetHeight / 2 - mid
+          );
+          if (d < min) {
+            min = d;
+            closest = i;
+          }
+        });
+        if (closest !== projectsCurrentActiveIndex) {
+          projectsTitleElements[projectsCurrentActiveIndex] &&
+            (projectsTitleElements[projectsCurrentActiveIndex].style.opacity =
+              "0.25");
+          projectsTitleElements[closest].style.opacity = "1";
+          const bgImg = document.querySelector(".projects-bg-img img");
+          if (bgImg) bgImg.src = projectsSpotlightItems[closest].img;
+          projectsCurrentActiveIndex = closest;
+        }
+
+        /* show the line */
+        gsap.set(projectsTitlesContainerElement, {
+          "--before-opacity": 1,
+          "--after-opacity": 1,
+        });
+        return;
+      }
+
+      /* 4️⃣  Outro 95 – 100 %  */
+      if (p > 0.95) {
+        gsap.set(projectsTitlesContainerElement, {
+          "--before-opacity": 0,
+          "--after-opacity": 0,
+        });
+      }
+    },
+  });
+
+  // Modal functionality
+  const projectsModal = document.getElementById("projects-modal");
+  const projectsModalClose = projectsModal?.querySelector(
+    ".projects-modal__close"
+  );
+
+  if (projectsModal && projectsModalClose) {
+    projectsTitlesContainer.addEventListener("click", (e) => {
+      const h1 = e.target.closest("h1");
+      if (!h1) return;
+
+      const idx = [...projectsTitleElements].indexOf(h1);
+      if (idx !== projectsCurrentActiveIndex) return;
+
+      const item = projectsSpotlightItems[idx];
+
+      projectsModal.querySelector(".projects-modal__img").src = item.img;
+      projectsModal.querySelector(".projects-modal__title").textContent =
+        item.name;
+      projectsModal.querySelector(".projects-modal__desc").textContent =
+        item.desc;
+      projectsModal.querySelector(".live").href = item.liveUrl;
+      projectsModal.querySelector(".git").href = item.gitUrl;
+
+      projectsModal.classList.add("open");
+      ScrollManager.disable();
+    });
+
+    const closeProjectsModal = () => {
+      projectsModal.classList.remove("open");
+      ScrollManager.enable();
+    };
+
+    projectsModalClose.addEventListener("click", closeProjectsModal);
+    projectsModal.addEventListener("click", (e) => {
+      if (e.target === projectsModal) closeProjectsModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && projectsModal.classList.contains("open")) {
+        closeProjectsModal();
+      }
+    });
+  }
 }
 
 setupEventListeners();
