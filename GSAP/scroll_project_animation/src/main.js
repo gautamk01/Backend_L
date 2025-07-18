@@ -35,19 +35,19 @@ window.addEventListener("touchmove", (e) => e.preventDefault(), {
 
 const config = {
   gap: 0.08,
-  speed: 0.3,
+  speed: 0.4,
   arcRadius: 500,
 };
 
+//Max - 8 in 4
 const spotlightItems = [
   { name: "Silent Arc", img: "/img-1.png" },
   { name: "Bloom24", img: "/img-2.png" },
   { name: "Glass Fade", img: "/img-3.png" },
-  { name: "Echo 9", img: "/img-4.png" },
-  { name: "Velvet Loop", img: "/img-5.png" },
-  { name: "Field Two", img: "/img-6.png" },
   { name: "Stilllroom", img: "/img-7.png" },
-  { name: "Ghostline", img: "/img-8.png" },
+  { name: "Echo 9", img: "/img-4.png" },
+  { name: "Mono 73", img: "/img-9.png" },
+  { name: "Echo 9", img: "/img-4.png" },
   { name: "Mono 73", img: "/img-9.png" },
 ];
 
@@ -250,13 +250,26 @@ const mTitle = modal.querySelector(".spotlight-modal__title");
 const mClose = modal.querySelector(".spotlight-modal__close");
 
 /* open */
+/* open modal ONLY on highlighted title */
 titlesContainer.addEventListener("click", (e) => {
   const h1 = e.target.closest("h1");
   if (!h1) return;
+
   const idx = [...titleElement].indexOf(h1);
-  mTitle.textContent = spotlightItems[idx].name;
+  // allow click only if it is the highlighted one
+  if (idx !== currentActiveIndex) return;
+
+  const item = spotlightItems[idx];
+
+  /* populate modal */
+  modal.querySelector(".spotlight-modal__img").src = item.img;
+  modal.querySelector(".spotlight-modal__title").textContent = item.name;
+  modal.querySelector(".spotlight-modal__desc").textContent = item.desc;
+  modal.querySelector(".live").href = item.liveUrl;
+  modal.querySelector(".git").href = item.gitUrl;
+
   modal.classList.add("open");
-  originalScrollFn.open(); // <-- freeze scrolling
+  originalScrollFn.open();
 });
 
 /* close */

@@ -150,13 +150,13 @@ section {
   gap: 5rem;
   transform: translateY(100%);
   z-index: 2;
-  cursor: pointer;
 }
 
 .spotlight-titles h1 {
   color: #fff;
   opacity: 0.25;
   transition: opacity 0.3s ease;
+  cursor: pointer;
 }
 .spotlight-titles h1:hover {
   color: #d6d5d5;
@@ -268,4 +268,50 @@ section {
 }
 .spotlight-modal__btn:hover {
   background: #e5e5e5;
+}
+
+.spotlight-modal__img {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: var(--space-md);
+}
+
+.spotlight-modal__btns {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.spotlight-modal__btn.live {
+  background: #fff;
+  color: #000;
+}
+.spotlight-modal__btn.git {
+  background: #333;
+  color: #fff;
+}
+.spotlight-modal__btn:hover {
+  filter: brightness(1.15);
+}
+
+.spotlight-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* sits on top of the image */
+  background: radial-gradient(
+    ellipse 60% 100% at 30% 50%,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  pointer-events: none; /* keeps image clicks intact */
+}
+
+@media (max-width: 950px) {
+  .spotlight-header {
+    display: none;
+  }
 }
